@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a2430"/>
+      <stop offset="45%" stop-color="#123848"/>
+      <stop offset="100%" stop-color="#0c1c28"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0.2" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#2eb8a6" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#2eb8a6" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#2eb8a6" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#e7eef4" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sea)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <path d="M0 620 C280 540 420 700 720 640 C980 590 1120 500 1600 560 L1600 900 L0 900 Z" fill="#071018" fill-opacity="0.55"/>
+  <path d="M0 680 C320 600 520 740 820 690 C1100 645 1280 580 1600 630 L1600 900 L0 900 Z" fill="#071018" fill-opacity="0.4"/>
+  <ellipse cx="1180" cy="280" rx="420" ry="260" fill="url(#beam)"/>
+  <g fill="none" stroke="#2eb8a6" stroke-opacity="0.35" stroke-width="2">
+    <circle cx="1180" cy="300" r="58"/>
+    <circle cx="1180" cy="300" r="92" stroke-opacity="0.2"/>
+  </g>
+  <circle cx="1180" cy="300" r="18" fill="#2eb8a6" fill-opacity="0.55"/>
+</svg>

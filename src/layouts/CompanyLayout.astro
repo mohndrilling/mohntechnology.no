@@ -1,0 +1,118 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	lang: 'en' | 'no';
+	footerBrand: string;
+	footerTagline: string;
+	footerCopy: string;
+}
+
+const { title, description, lang, footerBrand, footerTagline, footerCopy } = Astro.props;
+---
+<BaseLayout title={title} description={description} lang={lang} brand="mohn">
+	<slot />
+
+	<footer class="footer">
+		<div class="container footer-inner">
+			<p class="footer-brand">{footerBrand}</p>
+			<p class="footer-tagline">{footerTagline}</p>
+			<p class="footer-copy">{footerCopy}</p>
+		</div>
+	</footer>
+
+	<style is:global>
+		.container {
+			width: var(--container);
+			max-width: 100%;
+			margin-inline: auto;
+			padding-inline: clamp(1rem, 4vw, 3rem);
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.6rem 1.25rem;
+			font-family: var(--font-body);
+			font-weight: 600;
+			font-size: 0.95rem;
+			border-radius: var(--radius);
+			border: none;
+			cursor: pointer;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+		}
+		.btn-primary {
+			background: var(--color-accent);
+			color: var(--color-bg);
+		}
+		.btn-primary:hover {
+			background: var(--color-accent-hover);
+			text-decoration: none;
+			box-shadow: 0 0 24px var(--color-accent-dim);
+		}
+		.btn-ghost {
+			background: transparent;
+			color: var(--color-text);
+			border: 1px solid var(--color-border);
+		}
+		.btn-ghost:hover {
+			background: var(--color-surface-elevated);
+			text-decoration: none;
+			border-color: var(--color-text-muted);
+		}
+
+		.section-title {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: clamp(1.75rem, 3vw, 2.25rem);
+			margin: 0 0 0.5rem;
+			letter-spacing: -0.02em;
+		}
+		.section-lead {
+			color: var(--color-text-muted);
+			font-size: 1.08rem;
+			margin: 0 0 1.75rem;
+			max-width: 42rem;
+		}
+
+		.footer {
+			padding: 2.5rem 0;
+			border-top: 1px solid var(--color-border);
+		}
+		.footer-inner {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 1rem 2rem;
+		}
+		.footer-brand {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			margin: 0;
+		}
+		.footer-tagline {
+			color: var(--color-text-muted);
+			margin: 0;
+			font-size: 0.95rem;
+		}
+		.footer-copy {
+			color: var(--color-text-muted);
+			margin: 0 0 0 auto;
+			font-size: 0.9rem;
+		}
+
+		@media (max-width: 640px) {
+			.footer-inner {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+			.footer-copy {
+				margin: 0;
+			}
+		}
+	</style>
+</BaseLayout>

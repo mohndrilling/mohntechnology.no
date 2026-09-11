@@ -1,0 +1,110 @@
+---
+interface Props {
+	label: string;
+	need: string;
+	message: string;
+	/** Optional path once the real file exists, e.g. /media/company/hero/operations.mp4 */
+	src?: string;
+	kind?: 'image' | 'video';
+	aspect?: 'hero' | 'product' | 'story';
+}
+
+const { label, need, message, src, kind = 'image', aspect = 'product' } = Astro.props;
+const isVideo = kind === 'video' || (src && /\.(mp4|webm|mov)$/i.test(src));
+---
+
+<figure class:list={['media-ph', `media-ph--${aspect}`]} data-media-placeholder>
+	{
+		src && !isVideo ? (
+			<img src={src} alt={label} class="media-ph-file" width="1200" height="750" />
+		) : src && isVideo ? (
+			<video class="media-ph-file" controls playsinline preload="metadata" src={src}>
+				<a href={src}>{label}</a>
+			</video>
+		) : (
+			<div class="media-ph-empty" role="img" aria-label={`${label}. ${need}`}>
+				<p class="media-ph-kicker">{kind === 'video' ? 'Video needed' : 'Image needed'}</p>
+				<p class="media-ph-label">{label}</p>
+				<p class="media-ph-need">
+					<strong>Shoot / supply:</strong> {need}
+				</p>
+				<p class="media-ph-message">
+					<strong>Message:</strong> {message}
+				</p>
+			</div>
+		)
+	}
+</figure>
+
+<style>
+	.media-ph {
+		margin: 0;
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+	.media-ph--hero {
+		aspect-ratio: 21 / 9;
+		min-height: 220px;
+	}
+	.media-ph--product {
+		aspect-ratio: 16 / 10;
+	}
+	.media-ph--story {
+		aspect-ratio: 16 / 10;
+	}
+	.media-ph-file {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.media-ph-empty {
+		height: 100%;
+		min-height: inherit;
+		padding: 1.25rem 1.35rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: 0.45rem;
+		background:
+			linear-gradient(160deg, var(--color-surface-elevated) 0%, var(--color-surface) 55%, #0a1820 100%),
+			repeating-linear-gradient(
+				-12deg,
+				transparent,
+				transparent 10px,
+				rgba(46, 184, 166, 0.04) 10px,
+				rgba(46, 184, 166, 0.04) 11px
+			);
+	}
+	.media-ph-kicker {
+		margin: 0;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+	.media-ph-label {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-size: 1.15rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		color: var(--color-text);
+	}
+	.media-ph-need,
+	.media-ph-message {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.45;
+		color: var(--color-text-muted);
+		max-width: 40rem;
+	}
+	.media-ph-need strong,
+	.media-ph-message strong {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+</style>

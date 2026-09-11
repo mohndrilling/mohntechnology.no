@@ -12,12 +12,26 @@ interface Props {
 		placeholderEmail: string;
 		placeholderMessage: string;
 	};
-	contactPortalText: string;
-	contactPortalLink: string;
-	portalUrl: string;
+	contactPortalText?: string;
+	contactPortalLink?: string;
+	portalUrl?: string;
+	interestLabel?: string;
+	interestOptions?: string[];
 }
 
-const { lang, contactTitle, contactLead, formLabels, contactPortalText, contactPortalLink, portalUrl } = Astro.props;
+const {
+	lang,
+	contactTitle,
+	contactLead,
+	formLabels,
+	contactPortalText,
+	contactPortalLink,
+	portalUrl,
+	interestLabel,
+	interestOptions = [],
+} = Astro.props;
+const showPortal = Boolean(contactPortalText && contactPortalLink && portalUrl);
+const showInterest = Boolean(interestLabel && interestOptions.length > 0);
 
 const apiUrl = (import.meta.env.PUBLIC_CONTACT_API_URL as string | undefined)?.trim() ?? '';
 
@@ -33,17 +47,31 @@ const msgNocfg =
 		: 'The contact form is not configured (missing PUBLIC_CONTACT_API_URL).';
 const msgBad =
 	lang === 'no' ? 'Sjekk at alle felt er fylt ut riktig.' : 'Please check that all fields are valid.';
+const interestPrefix = lang === 'no' ? 'Interesse' : 'Interest';
 ---
 
 <section id="contact" class="section cta">
 	<div class="container cta-inner">
 		<h2 class="section-title">{contactTitle}</h2>
 		<p class="section-lead">{contactLead}</p>
-		<form class="contact-form" method="post" action="#" novalidate data-contact-api={apiUrl}>
+		<form class="contact-form" method="post" action="#" novalidate data-contact-api={apiUrl} data-interest-prefix={interestPrefix}>
 			<div class="form-honeypot" aria-hidden="true">
 				<label for={`company-${lang}`}>Company</label>
 				<input type="text" id={`company-${lang}`} name="company" tabindex="-1" autocomplete="off" />
 			</div>
+			{showInterest && (
+				<div class="form-row">
+					<label for={`interest-${lang}`}>{interestLabel}</label>
+					<select id={`interest-${lang}`} name="interest" required>
+						<option value="" disabled selected>
+							{lang === 'no' ? 'Velg…' : 'Select…'}
+						</option>
+						{interestOptions.map((option) => (
+							<option value={option}>{option}</option>
+						))}
+					</select>
+				</div>
+			)}
 			<div class="form-row">
 				<label for={`name-${lang}`}>{formLabels.name}</label>
 				<input id={`name-${lang}`} name="name" type="text" required placeholder={formLabels.placeholderName} />
@@ -59,13 +87,64 @@ const msgBad =
 			<p class="form-status" role="status" aria-live="polite" hidden></p>
 			<button type="submit" class="btn btn-primary btn-lg contact-submit">{formLabels.submit}</button>
 		</form>
-		<p class="cta-portal">
-			{contactPortalText} <a href={portalUrl} target="_blank" rel="noopener">{contactPortalLink}</a>.
-		</p>
+		{showPortal && (
+			<p class="cta-portal">
+				{contactPortalText} <a href={portalUrl} target="_blank" rel="noopener">{contactPortalLink}</a>.
+			</p>
+		)}
 	</div>
 </section>
 
 <style>
+	.cta-inner {
+		max-width: 38rem;
+		width: 100%;
+		margin-inline: auto;
+	}
+	.contact-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		margin-bottom: 1.5rem;
+	}
+	.form-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+	.form-row label {
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--color-text-muted);
+	}
+	.form-row input,
+	.form-row textarea,
+	.form-row select {
+		padding: 0.75rem 1rem;
+		font-family: var(--font-body);
+		font-size: 1rem;
+		color: var(--color-text);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+	}
+	.form-row input::placeholder,
+	.form-row textarea::placeholder {
+		color: var(--color-text-muted);
+		opacity: 0.7;
+	}
+	.form-row input:focus,
+	.form-row textarea:focus,
+	.form-row select:focus {
+		outline: none;
+		border-color: var(--color-accent);
+		box-shadow: 0 0 0 3px var(--color-accent-dim);
+	}
+	.cta-portal {
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+		margin: 0;
+	}
 	.form-honeypot {
 		position: absolute;
 		width: 1px;
@@ -98,6 +177,7 @@ const msgBad =
 		const url = form.dataset.contactApi?.trim() || '';
 		const statusEl = form.querySelector('.form-status');
 		const submitBtn = form.querySelector('.contact-submit');
+		const interestPrefix = form.dataset.interestPrefix || 'Interest';
 
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
@@ -111,10 +191,14 @@ const msgBad =
 			}
 
 			const fd = new FormData(form);
+			const interest = String(fd.get('interest') || '').trim();
+			const rawMessage = String(fd.get('message') || '').trim();
+			const message = interest ? `[${interestPrefix}: ${interest}]\n\n${rawMessage}` : rawMessage;
+
 			const payload = {
 				name: String(fd.get('name') || '').trim(),
 				email: String(fd.get('email') || '').trim(),
-				message: String(fd.get('message') || '').trim(),
+				message,
 				company: String(fd.get('company') || '').trim(),
 			};
 

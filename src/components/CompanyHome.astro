@@ -1,0 +1,1112 @@
+---
+import ContactForm from './ContactForm.astro';
+import LocaleThemeControls from './LocaleThemeControls.astro';
+import MediaPlaceholder from './MediaPlaceholder.astro';
+
+type Media = {
+	kind?: 'image' | 'video';
+	src?: string;
+	label: string;
+	need: string;
+	message: string;
+};
+
+type Product = {
+	title: string;
+	description: string;
+	edge?: string;
+	applicationsTitle: string;
+	applications: string[];
+	proofLine?: string;
+	infoCta: string;
+	infoHref: string;
+	infoExternal?: boolean;
+	portalCta: string;
+	portalHref: string;
+	portalExternal?: boolean;
+	demoCta?: string;
+	demoHref?: string;
+	media: Media;
+};
+
+type Proof = { value: string; label: string };
+type Project = {
+	tag: string;
+	title: string;
+	place: string;
+	problem: string;
+	result: string;
+	media: Media;
+};
+type ProblemItem = { title: string; body: string };
+type OpenItem = { title: string; body: string; cta: string; href: string };
+
+interface Props {
+	lang: 'en' | 'no';
+	homePath: string;
+	navProducts: string;
+	navProjects: string;
+	navAbout: string;
+	navOpen: string;
+	navContact: string;
+	navCta: string;
+	hero: {
+		brand: string;
+		title: string;
+		lead: string;
+		ctaPrimary: string;
+		ctaSecondary: string;
+		media: Media;
+	};
+	problemTitle: string;
+	problemLead: string;
+	problemItems: ProblemItem[];
+	productsTitle: string;
+	productsLead: string;
+	products: Product[];
+	proof: Proof[];
+	projectsTitle: string;
+	projectsLead: string;
+	projects: Project[];
+	aboutTitle: string;
+	aboutLead: string;
+	aboutBody: string;
+	openTitle: string;
+	openLead: string;
+	openItems: OpenItem[];
+	contactTitle: string;
+	contactLead: string;
+	contactEmail: string;
+	contactInterestLabel: string;
+	contactInterests: string[];
+	addressLines: string[];
+	formLabels: {
+		name: string;
+		email: string;
+		message: string;
+		submit: string;
+		placeholderName: string;
+		placeholderEmail: string;
+		placeholderMessage: string;
+	};
+}
+
+const {
+	lang,
+	homePath,
+	navProducts,
+	navProjects,
+	navAbout,
+	navOpen,
+	navContact,
+	navCta,
+	hero,
+	problemTitle,
+	problemLead,
+	problemItems,
+	productsTitle,
+	productsLead,
+	products,
+	proof,
+	projectsTitle,
+	projectsLead,
+	projects,
+	aboutTitle,
+	aboutLead,
+	aboutBody,
+	openTitle,
+	openLead,
+	openItems,
+	contactTitle,
+	contactLead,
+	contactEmail,
+	contactInterestLabel,
+	contactInterests,
+	addressLines,
+	formLabels,
+} = Astro.props;
+
+const uid = `mt-${lang}`;
+const mainTabs = [
+	{ id: 'products', label: navProducts },
+	{ id: 'work', label: navProjects },
+	{ id: 'platform', label: navAbout },
+	{ id: 'open', label: navOpen },
+	{ id: 'contact', label: navContact },
+] as const;
+
+const problemLabel = lang === 'no' ? 'Behov' : 'Need';
+const resultLabel = lang === 'no' ? 'Leveranse' : 'Delivered';
+const productTabsLabel = lang === 'no' ? 'Velg produkt' : 'Choose product';
+const mainTabsLabel = lang === 'no' ? 'Hovedmeny' : 'Main navigation';
+const menuLabel = lang === 'no' ? 'Meny' : 'Menu';
+const linkToEn = '/';
+const linkToNo = '/no/';
+
+const interestForOpen = openItems.map((_, i) => {
+	const careers = lang === 'no' ? 'Jobb / samarbeid' : 'Careers / work with us';
+	const vision = lang === 'no' ? 'Skreddersydd synsproblem' : 'Custom vision problem';
+	return i === 0 ? careers : vision;
+});
+---
+
+<div class="mt-shell" data-mt-shell data-uid={uid}>
+	<header class="mt-header">
+		<div class="container mt-header-inner">
+			<a href={homePath} class="mt-logo" data-switch-main="products">{hero.brand}</a>
+
+			<nav class="mt-nav" aria-label={mainTabsLabel}>
+				<div class="mt-tablist" role="tablist" aria-label={mainTabsLabel}>
+					{
+						mainTabs.map((tab, i) => (
+							<button
+								type="button"
+								class:list={['mt-nav-link', { 'is-active': i === 0 }]}
+								role="tab"
+								id={`${uid}-main-tab-${tab.id}`}
+								aria-selected={i === 0 ? 'true' : 'false'}
+								aria-controls={`${uid}-main-panel-${tab.id}`}
+								tabindex={i === 0 ? 0 : -1}
+								data-main-tab={tab.id}
+							>
+								{tab.label}
+							</button>
+						))
+					}
+				</div>
+			</nav>
+
+			<div class="mt-header-tools">
+				<LocaleThemeControls locale={lang} linkToEn={linkToEn} linkToNo={linkToNo} />
+				<button type="button" class="btn btn-primary mt-nav-cta" data-switch-main="contact">{navCta}</button>
+				<button type="button" class="mt-menu-toggle" data-menu-toggle aria-expanded="false" aria-controls={`${uid}-mobile-nav`}>
+					{menuLabel}
+				</button>
+			</div>
+		</div>
+
+		<div class="mt-mobile-nav container" id={`${uid}-mobile-nav`} data-mobile-nav hidden>
+			{
+				mainTabs.map((tab, i) => (
+					<button
+						type="button"
+						class:list={['mt-mobile-link', { 'is-active': i === 0 }]}
+						data-main-tab={tab.id}
+						data-mobile-tab
+					>
+						{tab.label}
+					</button>
+				))
+			}
+			<button type="button" class="btn btn-primary mt-mobile-cta" data-switch-main="contact">{navCta}</button>
+		</div>
+	</header>
+
+	<main>
+		<section class="mt-intro container" aria-label={lang === 'no' ? 'Introduksjon' : 'Introduction'} data-intro>
+			<div class="mt-intro-media">
+				<MediaPlaceholder
+					label={hero.media.label}
+					need={hero.media.need}
+					message={hero.media.message}
+					src={hero.media.src}
+					kind={hero.media.kind}
+					aspect="hero"
+				/>
+			</div>
+			<p class="mt-intro-title">{hero.title}</p>
+			<p class="mt-intro-lead">{hero.lead}</p>
+		</section>
+
+		<div class="mt-panels container">
+			<section
+				class="mt-panel is-active"
+				role="tabpanel"
+				id={`${uid}-main-panel-products`}
+				aria-labelledby={`${uid}-main-tab-products`}
+				data-main-panel="products"
+				tabindex="0"
+			>
+				<h2 class="section-title problem-headline">{problemTitle}</h2>
+				<p class="section-lead">{problemLead}</p>
+				<div class="problem-grid">
+					{problemItems.map((item) => (
+						<article class="problem-item">
+							<h3>{item.title}</h3>
+							<p>{item.body}</p>
+						</article>
+					))}
+				</div>
+
+				<div class="products-block">
+					<h3 class="products-heading">{productsTitle}</h3>
+					<p class="section-lead products-lead">{productsLead}</p>
+
+					<div class="product-tabs-root" data-product-tabs>
+						<div class="product-tablist" role="tablist" aria-label={productTabsLabel}>
+							{
+								products.map((product, i) => (
+									<button
+										type="button"
+										class:list={['product-tab', { 'is-active': i === 0 }]}
+										role="tab"
+										id={`${uid}-product-tab-${i}`}
+										aria-selected={i === 0 ? 'true' : 'false'}
+										aria-controls={`${uid}-product-panel-${i}`}
+										tabindex={i === 0 ? 0 : -1}
+										data-product-tab={i}
+										data-product-name={product.title.toLowerCase()}
+									>
+										{product.title}
+									</button>
+								))
+							}
+						</div>
+
+						{
+							products.map((product, i) => (
+								<div
+									class:list={['product-panel', { 'is-active': i === 0 }]}
+									role="tabpanel"
+									id={`${uid}-product-panel-${i}`}
+									aria-labelledby={`${uid}-product-tab-${i}`}
+									hidden={i !== 0}
+									tabindex="0"
+									data-product-panel={i}
+								>
+									<div class="product-detail">
+										<div class="product-detail-media">
+											<MediaPlaceholder
+												label={product.media.label}
+												need={product.media.need}
+												message={product.media.message}
+												src={product.media.src}
+												kind={product.media.kind}
+												aspect="product"
+											/>
+										</div>
+										<div class="product-detail-body">
+											<h4 class="product-detail-title">{product.title}</h4>
+											<p>{product.description}</p>
+											{product.edge && <p class="product-edge">{product.edge}</p>}
+											<div class="product-applications">
+												<h5 class="product-applications-title">{product.applicationsTitle}</h5>
+												<ul class="product-applications-list">
+													{product.applications.map((app) => (
+														<li>{app}</li>
+													))}
+												</ul>
+											</div>
+											{product.proofLine && <p class="product-proof">{product.proofLine}</p>}
+											<div class="product-actions">
+												<a
+													href={product.infoHref}
+													class="btn btn-ghost"
+													target={product.infoExternal ? '_blank' : undefined}
+													rel={product.infoExternal ? 'noopener' : undefined}
+													data-info-link={product.infoHref.startsWith('#') ? 'contact' : undefined}
+												>
+													{product.infoCta}
+												</a>
+												<a
+													href={product.portalHref}
+													class="btn btn-primary"
+													target={product.portalExternal ? '_blank' : undefined}
+													rel={product.portalExternal ? 'noopener' : undefined}
+													data-portal-link={product.portalHref.startsWith('#') ? 'contact' : undefined}
+													data-interest={product.title}
+												>
+													{product.portalCta}
+												</a>
+												{
+													product.demoCta &&
+														product.demoHref &&
+														(product.demoHref.startsWith('#contact')
+															? (
+																<button
+																	type="button"
+																	class="btn btn-ghost"
+																	data-switch-main="contact"
+																	data-interest={product.title}
+																>
+																	{product.demoCta}
+																</button>
+															)
+															: (
+																<a
+																	href={product.demoHref}
+																	class="btn btn-ghost"
+																	target={product.demoHref.startsWith('http') ? '_blank' : undefined}
+																	rel={product.demoHref.startsWith('http') ? 'noopener' : undefined}
+																>
+																	{product.demoCta}
+																</a>
+															))
+												}
+											</div>
+										</div>
+									</div>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</section>
+
+			<section
+				class="mt-panel"
+				role="tabpanel"
+				id={`${uid}-main-panel-work`}
+				aria-labelledby={`${uid}-main-tab-work`}
+				data-main-panel="work"
+				hidden
+				tabindex="0"
+			>
+				<h2 class="section-title">{projectsTitle}</h2>
+				<p class="section-lead">{projectsLead}</p>
+				<div class="story-list">
+					{projects.map((project) => (
+						<article class="story-card">
+							<div class="story-card-media">
+								<MediaPlaceholder
+									label={project.media.label}
+									need={project.media.need}
+									message={project.media.message}
+									src={project.media.src}
+									kind={project.media.kind}
+									aspect="story"
+								/>
+							</div>
+							<div class="story-card-body">
+								<p class="story-eyebrow">{project.place}</p>
+								<p class="story-tag">{project.tag}</p>
+								<h3>{project.title}</h3>
+								<p>
+									<strong>{problemLabel}:</strong> {project.problem}
+								</p>
+								<p>
+									<strong>{resultLabel}:</strong> {project.result}
+								</p>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section
+				class="mt-panel"
+				role="tabpanel"
+				id={`${uid}-main-panel-platform`}
+				aria-labelledby={`${uid}-main-tab-platform`}
+				data-main-panel="platform"
+				hidden
+				tabindex="0"
+			>
+				<h2 class="section-title">{aboutTitle}</h2>
+				<p class="section-lead">{aboutLead}</p>
+				<p class="about-body">{aboutBody}</p>
+				<div class="proof-strip">
+					{proof.map((item) => (
+						<div class="proof-item">
+							<p class="proof-value">{item.value}</p>
+							<p class="proof-label">{item.label}</p>
+						</div>
+					))}
+				</div>
+			</section>
+
+			<section
+				class="mt-panel"
+				role="tabpanel"
+				id={`${uid}-main-panel-open`}
+				aria-labelledby={`${uid}-main-tab-open`}
+				data-main-panel="open"
+				hidden
+				tabindex="0"
+			>
+				<h2 class="section-title">{openTitle}</h2>
+				<p class="section-lead">{openLead}</p>
+				<div class="open-grid">
+					{openItems.map((item, i) => (
+						<article class="open-item">
+							<h3>{item.title}</h3>
+							<p>{item.body}</p>
+							<button type="button" class="btn btn-ghost" data-switch-main="contact" data-interest={interestForOpen[i]}>
+								{item.cta}
+							</button>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section
+				class="mt-panel"
+				role="tabpanel"
+				id={`${uid}-main-panel-contact`}
+				aria-labelledby={`${uid}-main-tab-contact`}
+				data-main-panel="contact"
+				hidden
+				tabindex="0"
+			>
+				<div class="contact-layout">
+					<div class="contact-main">
+						<ContactForm
+							lang={lang}
+							contactTitle={contactTitle}
+							contactLead={contactLead}
+							formLabels={formLabels}
+							interestLabel={contactInterestLabel}
+							interestOptions={contactInterests}
+						/>
+					</div>
+					<aside class="contact-aside">
+						<p class="address-email">
+							<a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+						</p>
+						<address class="address-block">
+							{addressLines.map((line) => (
+								<span>{line}</span>
+							))}
+						</address>
+					</aside>
+				</div>
+			</section>
+		</div>
+	</main>
+</div>
+
+<style>
+	.mt-shell {
+		min-height: 70vh;
+	}
+
+	.mt-header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background: var(--header-bg);
+		backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--color-border);
+	}
+	.mt-header-inner {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 1rem 1.5rem;
+		min-height: 4rem;
+	}
+	.mt-logo {
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+		color: var(--color-text);
+		text-decoration: none;
+		letter-spacing: -0.02em;
+		white-space: nowrap;
+	}
+	.mt-logo:hover {
+		color: var(--color-accent);
+		text-decoration: none;
+	}
+
+	.mt-nav {
+		display: none;
+		justify-content: center;
+	}
+	@media (min-width: 960px) {
+		.mt-nav {
+			display: flex;
+		}
+		.mt-menu-toggle {
+			display: none;
+		}
+	}
+	.mt-tablist {
+		display: flex;
+		align-items: center;
+		gap: 0.15rem;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.mt-nav-link {
+		appearance: none;
+		border: none;
+		background: transparent;
+		color: var(--color-text-muted);
+		font-family: var(--font-body);
+		font-size: 0.95rem;
+		font-weight: 500;
+		padding: 0.55rem 0.75rem;
+		border-radius: 0;
+		cursor: pointer;
+		position: relative;
+	}
+	.mt-nav-link:hover {
+		color: var(--color-text);
+	}
+	.mt-nav-link.is-active {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+	.mt-nav-link.is-active::after {
+		content: '';
+		position: absolute;
+		left: 0.75rem;
+		right: 0.75rem;
+		bottom: 0.2rem;
+		height: 2px;
+		background: var(--color-accent);
+		border-radius: 1px;
+	}
+
+	.mt-header-tools {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		justify-self: end;
+	}
+	.mt-nav-cta {
+		display: none;
+		white-space: nowrap;
+		font-size: 0.88rem;
+		padding: 0.45rem 0.85rem;
+	}
+	@media (min-width: 960px) {
+		.mt-nav-cta {
+			display: inline-flex;
+		}
+	}
+	.mt-menu-toggle {
+		appearance: none;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		color: var(--color-text);
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		font-weight: 600;
+		padding: 0.45rem 0.75rem;
+		border-radius: var(--radius);
+		cursor: pointer;
+	}
+	.mt-mobile-nav {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 0.35rem 0 0.85rem;
+		border-top: 1px solid var(--color-border);
+	}
+	.mt-mobile-nav[hidden] {
+		display: none;
+	}
+	.mt-mobile-link {
+		appearance: none;
+		border: none;
+		background: transparent;
+		text-align: left;
+		color: var(--color-text-muted);
+		font-family: var(--font-body);
+		font-size: 1rem;
+		font-weight: 500;
+		padding: 0.7rem 0.15rem;
+		cursor: pointer;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.mt-mobile-link.is-active {
+		color: var(--color-accent);
+		font-weight: 600;
+	}
+	.mt-mobile-cta {
+		margin-top: 0.65rem;
+		width: 100%;
+		justify-content: center;
+	}
+	@media (min-width: 960px) {
+		.mt-mobile-cta {
+			display: none;
+		}
+	}
+
+	.mt-intro {
+		padding: 1.5rem 0 0.25rem;
+		max-width: 52rem;
+	}
+	.mt-intro-media {
+		margin-bottom: 1.1rem;
+	}
+	.mt-intro-title {
+		font-family: var(--font-heading);
+		font-weight: 650;
+		font-size: clamp(1.1rem, 2vw, 1.3rem);
+		line-height: 1.35;
+		letter-spacing: -0.02em;
+		margin: 0 0 0.5rem;
+	}
+	.mt-intro-lead {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 0.98rem;
+		line-height: 1.55;
+	}
+	.mt-intro.is-collapsed {
+		display: none;
+	}
+
+	.mt-panels {
+		padding: 1.75rem 0 3.5rem;
+	}
+	.mt-panel[hidden] {
+		display: none;
+	}
+	.mt-panel:focus {
+		outline: none;
+	}
+
+	.problem-headline {
+		max-width: 28ch;
+	}
+	.problem-grid {
+		display: grid;
+		gap: 1.25rem;
+		margin-bottom: 2.5rem;
+	}
+	@media (min-width: 800px) {
+		.problem-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+	.problem-item {
+		border-top: 2px solid var(--color-accent);
+		padding-top: 0.9rem;
+	}
+	.problem-item h3 {
+		font-family: var(--font-heading);
+		font-size: 1.05rem;
+		margin: 0 0 0.4rem;
+	}
+	.problem-item p {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+	}
+
+	.products-block {
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-border);
+	}
+	.products-heading {
+		font-family: var(--font-heading);
+		font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+		margin: 0 0 0.35rem;
+		letter-spacing: -0.02em;
+	}
+	.products-lead {
+		margin-bottom: 1.1rem;
+	}
+
+	.product-tablist {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.15rem 1.25rem;
+		margin-bottom: 1.5rem;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.product-tab {
+		appearance: none;
+		border: none;
+		background: transparent;
+		color: var(--color-text-muted);
+		font-family: var(--font-heading);
+		font-size: 1.05rem;
+		font-weight: 600;
+		padding: 0.65rem 0.1rem 0.85rem;
+		cursor: pointer;
+		letter-spacing: -0.02em;
+		position: relative;
+	}
+	.product-tab:hover {
+		color: var(--color-text);
+	}
+	.product-tab.is-active {
+		color: var(--color-text);
+	}
+	.product-tab.is-active::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 2px;
+		background: var(--color-accent);
+	}
+	.product-panel[hidden] {
+		display: none;
+	}
+
+	.product-detail {
+		display: grid;
+		gap: 1.5rem;
+		align-items: start;
+	}
+	@media (min-width: 800px) {
+		.product-detail {
+			grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		}
+	}
+	.product-detail-media {
+		min-width: 0;
+	}
+	.product-detail-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+	}
+	.product-detail-title {
+		font-family: var(--font-heading);
+		font-size: 1.5rem;
+		margin: 0;
+		letter-spacing: -0.02em;
+	}
+	.product-detail-body > p {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 1.02rem;
+		line-height: 1.65;
+	}
+	.product-edge {
+		border-left: 2px solid var(--color-accent);
+		padding-left: 0.75rem;
+		color: var(--color-text) !important;
+		font-size: 0.98rem !important;
+	}
+	.product-applications {
+		margin: 0.15rem 0 0;
+	}
+	.product-applications-title {
+		font-family: var(--font-heading);
+		font-size: 0.92rem;
+		font-weight: 600;
+		margin: 0 0 0.45rem;
+		color: var(--color-text);
+		letter-spacing: -0.01em;
+	}
+	.product-applications-list {
+		margin: 0;
+		padding: 0 0 0 1.15rem;
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+		line-height: 1.55;
+	}
+	.product-applications-list li {
+		margin-bottom: 0.25rem;
+	}
+	.product-applications-list li:last-child {
+		margin-bottom: 0;
+	}
+	.product-proof {
+		margin: 0;
+		font-size: 0.92rem;
+		font-weight: 500;
+		color: var(--color-accent);
+		border-left: 2px solid var(--color-accent);
+		padding-left: 0.75rem;
+		line-height: 1.5;
+	}
+	.product-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 0.35rem;
+	}
+
+	.story-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.story-card {
+		display: grid;
+		gap: 1.25rem;
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--color-border);
+		align-items: start;
+	}
+	.story-card:last-child {
+		border-bottom: 1px solid var(--color-border);
+	}
+	@media (min-width: 800px) {
+		.story-card {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: 2rem;
+		}
+	}
+	.story-card-media {
+		min-width: 0;
+	}
+	.story-card-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+	.story-eyebrow {
+		margin: 0;
+		font-size: 0.82rem;
+		color: var(--color-text-muted);
+		font-weight: 500;
+	}
+	.story-tag {
+		margin: 0;
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: var(--color-accent);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.story-card-body h3 {
+		font-family: var(--font-heading);
+		font-size: 1.15rem;
+		margin: 0.15rem 0 0.35rem;
+		letter-spacing: -0.02em;
+	}
+	.story-card-body p {
+		margin: 0 0 0.35rem;
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+		line-height: 1.55;
+	}
+	.story-card-body p:last-child {
+		margin-bottom: 0;
+	}
+	.story-card-body strong {
+		color: var(--color-text);
+	}
+
+	.about-body {
+		margin: 0 0 2rem;
+		font-size: 1.08rem;
+		color: var(--color-text-muted);
+		line-height: 1.7;
+		max-width: 42rem;
+	}
+	.proof-strip {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem 1.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-border);
+	}
+	@media (min-width: 800px) {
+		.proof-strip {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	.proof-value {
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+		margin: 0 0 0.35rem;
+		color: var(--color-accent);
+	}
+	.proof-label {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 0.92rem;
+	}
+
+	.open-grid {
+		display: grid;
+		gap: 1.5rem;
+	}
+	@media (min-width: 700px) {
+		.open-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	.open-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding-top: 1rem;
+		border-top: 2px solid var(--color-border);
+	}
+	.open-item h3 {
+		font-family: var(--font-heading);
+		font-size: 1.2rem;
+		margin: 0;
+	}
+	.open-item p {
+		margin: 0;
+		color: var(--color-text-muted);
+		flex: 1;
+	}
+	.open-item .btn {
+		align-self: flex-start;
+	}
+
+	.contact-layout {
+		display: grid;
+		gap: 2rem;
+	}
+	@media (min-width: 900px) {
+		.contact-layout {
+			grid-template-columns: minmax(0, 1.3fr) minmax(14rem, 0.7fr);
+			align-items: start;
+		}
+	}
+	.contact-main :global(.section) {
+		padding-top: 0;
+	}
+	.contact-aside {
+		padding: 1.25rem 0 0;
+		border-top: 1px solid var(--color-border);
+	}
+	@media (min-width: 900px) {
+		.contact-aside {
+			padding: 0.35rem 0 0 1.5rem;
+			border-top: none;
+			border-left: 1px solid var(--color-border);
+		}
+	}
+	.address-email {
+		margin: 0 0 0.75rem;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.address-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		font-style: normal;
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 640px) {
+		.product-actions .btn {
+			width: 100%;
+		}
+		.mt-header-inner {
+			grid-template-columns: 1fr auto;
+		}
+	}
+</style>
+
+<script>
+	function initShell(shell) {
+		const mainTabs = [...shell.querySelectorAll('[data-main-tab]:not([data-mobile-tab])')];
+		const mobileTabs = [...shell.querySelectorAll('[data-mobile-tab]')];
+		const allMainTriggers = [...shell.querySelectorAll('[data-main-tab]')];
+		const mainPanels = [...shell.querySelectorAll('[data-main-panel]')];
+		const productRoot = shell.querySelector('[data-product-tabs]');
+		const productTabs = productRoot ? [...productRoot.querySelectorAll('[data-product-tab]')] : [];
+		const productPanels = productRoot ? [...productRoot.querySelectorAll('[data-product-panel]')] : [];
+		const intro = shell.querySelector('[data-intro]');
+		const menuToggle = shell.querySelector('[data-menu-toggle]');
+		const mobileNav = shell.querySelector('[data-mobile-nav]');
+
+		function setInterest(value) {
+			if (!value) return;
+			const select = shell.querySelector('select[name="interest"]');
+			if (!(select instanceof HTMLSelectElement)) return;
+			const match = [...select.options].find((opt) => opt.value === value);
+			if (match) select.value = value;
+		}
+
+		function closeMobileNav() {
+			if (!(mobileNav instanceof HTMLElement) || !(menuToggle instanceof HTMLButtonElement)) return;
+			mobileNav.hidden = true;
+			menuToggle.setAttribute('aria-expanded', 'false');
+		}
+
+		function activateMain(id, { focus = true, interest } = {}) {
+			allMainTriggers.forEach((tab) => {
+				const active = tab.getAttribute('data-main-tab') === id;
+				tab.classList.toggle('is-active', active);
+				if (tab.getAttribute('role') === 'tab') {
+					tab.setAttribute('aria-selected', active ? 'true' : 'false');
+					tab.tabIndex = active ? 0 : -1;
+				}
+			});
+			mainPanels.forEach((panel) => {
+				const active = panel.getAttribute('data-main-panel') === id;
+				panel.classList.toggle('is-active', active);
+				panel.hidden = !active;
+			});
+			if (intro instanceof HTMLElement) {
+				intro.classList.toggle('is-collapsed', id !== 'products');
+			}
+			if (interest) setInterest(interest);
+			closeMobileNav();
+			if (focus) {
+				const panel = mainPanels.find((p) => p.getAttribute('data-main-panel') === id);
+				panel?.focus({ preventScroll: true });
+			}
+			const url = new URL(window.location.href);
+			url.hash = id;
+			history.replaceState(null, '', url);
+		}
+
+		function activateProduct(index, { focus = true } = {}) {
+			productTabs.forEach((tab) => {
+				const active = Number(tab.getAttribute('data-product-tab')) === index;
+				tab.classList.toggle('is-active', active);
+				tab.setAttribute('aria-selected', active ? 'true' : 'false');
+				tab.tabIndex = active ? 0 : -1;
+			});
+			productPanels.forEach((panel) => {
+				const active = Number(panel.getAttribute('data-product-panel')) === index;
+				panel.classList.toggle('is-active', active);
+				panel.hidden = !active;
+			});
+			if (focus) productPanels[index]?.focus({ preventScroll: true });
+		}
+
+		mainTabs.forEach((tab) => {
+			tab.addEventListener('click', () => activateMain(tab.getAttribute('data-main-tab') || 'products'));
+		});
+		mobileTabs.forEach((tab) => {
+			tab.addEventListener('click', () => activateMain(tab.getAttribute('data-main-tab') || 'products'));
+		});
+		productTabs.forEach((tab) => {
+			tab.addEventListener('click', () => activateProduct(Number(tab.getAttribute('data-product-tab') || 0)));
+		});
+
+		if (menuToggle instanceof HTMLButtonElement && mobileNav instanceof HTMLElement) {
+			menuToggle.addEventListener('click', () => {
+				const open = mobileNav.hidden;
+				mobileNav.hidden = !open;
+				menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+			});
+		}
+
+		shell.querySelectorAll('[data-switch-main]').forEach((el) => {
+			el.addEventListener('click', (event) => {
+				if (el instanceof HTMLAnchorElement && el.getAttribute('href')?.startsWith('http')) return;
+				event.preventDefault();
+				activateMain(el.getAttribute('data-switch-main') || 'products', {
+					interest: el.getAttribute('data-interest') || undefined,
+				});
+			});
+		});
+
+		shell.querySelectorAll('[data-portal-link="contact"], [data-info-link="contact"]').forEach((el) => {
+			el.addEventListener('click', (event) => {
+				event.preventDefault();
+				activateMain('contact', { interest: el.getAttribute('data-interest') || undefined });
+			});
+		});
+
+		const hash = window.location.hash.replace(/^#/, '').toLowerCase();
+		const productNames = productTabs.map((tab) => (tab.getAttribute('data-product-name') || '').toLowerCase());
+		const productIndex = productNames.indexOf(hash);
+		if (productIndex >= 0) {
+			activateMain('products', { focus: false });
+			activateProduct(productIndex, { focus: false });
+		} else if (['products', 'work', 'platform', 'open', 'contact'].includes(hash)) {
+			activateMain(hash, { focus: false });
+		}
+	}
+
+	document.querySelectorAll('[data-mt-shell]').forEach((shell) => {
+		if (shell instanceof HTMLElement) initShell(shell);
+	});
+</script>

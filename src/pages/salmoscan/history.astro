@@ -1,5 +1,5 @@
 ---
-import MarketingLayout from '../layouts/MarketingLayout.astro';
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
 import { getEntry, render } from 'astro:content';
 
 const locale = 'en';
@@ -15,8 +15,8 @@ const { footerBrand, footerTagline, footerCopy, navFeatures, navProduct, navCont
 	title={doc.data.title}
 	description={doc.data.description}
 	lang={locale}
-	homePath="/"
-	historyPath="/history"
+	homePath="/salmoscan/"
+	historyPath="/salmoscan/history"
 	currentPage="history"
 	navFeatures={navFeatures}
 	navProduct={navProduct}
@@ -28,6 +28,7 @@ const { footerBrand, footerTagline, footerCopy, navFeatures, navProduct, navCont
 	footerBrand={footerBrand}
 	footerTagline={footerTagline}
 	footerCopy={footerCopy}
+	companyHomePath="/"
 >
 	<main>
 		<article class="section history-doc">

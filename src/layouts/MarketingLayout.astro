@@ -19,6 +19,8 @@ interface Props {
 	footerBrand: string;
 	footerTagline: string;
 	footerCopy: string;
+	companyHomePath?: string;
+	companyLabel?: string;
 }
 
 const {
@@ -38,20 +40,23 @@ const {
 	footerBrand,
 	footerTagline,
 	footerCopy,
+	companyHomePath = lang === 'no' ? '/no/' : '/',
+	companyLabel = lang === 'no' ? 'Mohn Technology' : 'Mohn Technology',
 } = Astro.props;
 
-const linkToEn = currentPage === 'history' ? '/history' : '/';
-const linkToNo = currentPage === 'history' ? '/no/history' : '/no/';
+const linkToEn = currentPage === 'history' ? '/salmoscan/history' : '/salmoscan/';
+const linkToNo = currentPage === 'history' ? '/salmoscan/no/history' : '/salmoscan/no/';
 const featuresHref = currentPage === 'home' ? '#features' : `${homePath}#features`;
 const productHref = currentPage === 'home' ? '#product' : `${homePath}#product`;
 const contactHref = currentPage === 'home' ? '#contact' : `${homePath}#contact`;
 const faqHref = currentPage === 'home' ? '#faq' : `${homePath}#faq`;
 ---
-<BaseLayout title={title} description={description} lang={lang}>
+<BaseLayout title={title} description={description} lang={lang} brand="salmoscan">
 	<header class="header">
 		<div class="container header-inner">
 			<a href={homePath} class="logo">{footerBrand}</a>
 			<nav class="nav">
+				<a href={companyHomePath} class="nav-company">{companyLabel}</a>
 				<a href={featuresHref}>{navFeatures}</a>
 				<a href={productHref}>{navProduct}</a>
 				<a href={faqHref}>{navFaq}</a>
@@ -148,7 +153,8 @@ const faqHref = currentPage === 'home' ? '#faq' : `${homePath}#faq`;
 			background: var(--color-accent);
 			color: var(--color-bg);
 		}
-		.btn-primary:hover { background: #5eead4; text-decoration: none; box-shadow: 0 0 24px var(--color-accent-dim); }
+		.btn-primary:hover { background: var(--color-accent-hover); text-decoration: none; box-shadow: 0 0 24px var(--color-accent-dim); }
+		.nav-company { font-weight: 500; }
 		.btn-ghost {
 			background: transparent;
 			color: var(--color-text);
