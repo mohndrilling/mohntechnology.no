@@ -1,0 +1,39 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import { getEntry, render } from 'astro:content';
+
+const locale = 'no';
+const home = await getEntry('pages', 'home.no');
+const doc = await getEntry('history', 'history.no');
+if (!home) throw new Error('Content page "home.no" not found');
+if (!doc) throw new Error('Content page "history.no" not found');
+
+const { Content } = await render(doc);
+const { footerBrand, footerTagline, footerCopy, navFeatures, navProduct, navContact, navHistory, navFaq, navPortal, portalUrl } = home.data;
+---
+<MarketingLayout
+	title={doc.data.title}
+	description={doc.data.description}
+	lang={locale}
+	homePath="/no/"
+	historyPath="/no/history"
+	currentPage="history"
+	navFeatures={navFeatures}
+	navProduct={navProduct}
+	navContact={navContact}
+	navHistory={navHistory}
+	navFaq={navFaq}
+	navPortal={navPortal}
+	portalUrl={portalUrl}
+	footerBrand={footerBrand}
+	footerTagline={footerTagline}
+	footerCopy={footerCopy}
+>
+	<main>
+		<article class="section history-doc">
+			<div class="container markdown-prose">
+				<Content />
+			</div>
+		</article>
+	</main>
+</MarketingLayout>

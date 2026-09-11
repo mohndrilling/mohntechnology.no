@@ -1,0 +1,423 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import LocaleThemeControls from '../components/LocaleThemeControls.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	lang: 'en' | 'no';
+	homePath: string;
+	historyPath: string;
+	currentPage: 'home' | 'history';
+	navFeatures: string;
+	navProduct: string;
+	navContact: string;
+	navHistory: string;
+	navFaq: string;
+	navPortal: string;
+	portalUrl: string;
+	footerBrand: string;
+	footerTagline: string;
+	footerCopy: string;
+}
+
+const {
+	title,
+	description,
+	lang,
+	homePath,
+	historyPath,
+	currentPage,
+	navFeatures,
+	navProduct,
+	navContact,
+	navHistory,
+	navFaq,
+	navPortal,
+	portalUrl,
+	footerBrand,
+	footerTagline,
+	footerCopy,
+} = Astro.props;
+
+const linkToEn = currentPage === 'history' ? '/history' : '/';
+const linkToNo = currentPage === 'history' ? '/no/history' : '/no/';
+const featuresHref = currentPage === 'home' ? '#features' : `${homePath}#features`;
+const productHref = currentPage === 'home' ? '#product' : `${homePath}#product`;
+const contactHref = currentPage === 'home' ? '#contact' : `${homePath}#contact`;
+const faqHref = currentPage === 'home' ? '#faq' : `${homePath}#faq`;
+---
+<BaseLayout title={title} description={description} lang={lang}>
+	<header class="header">
+		<div class="container header-inner">
+			<a href={homePath} class="logo">{footerBrand}</a>
+			<nav class="nav">
+				<a href={featuresHref}>{navFeatures}</a>
+				<a href={productHref}>{navProduct}</a>
+				<a href={faqHref}>{navFaq}</a>
+				<a href={contactHref}>{navContact}</a>
+				{currentPage === 'history' ? (
+					<span class="btn btn-ghost nav-history-current" aria-current="page">{navHistory}</span>
+				) : (
+					<a href={historyPath} class="btn btn-ghost nav-history-btn">{navHistory}</a>
+				)}
+				<LocaleThemeControls locale={lang} linkToEn={linkToEn} linkToNo={linkToNo} />
+				<a href={portalUrl} class="btn btn-primary" target="_blank" rel="noopener">{navPortal}</a>
+			</nav>
+		</div>
+	</header>
+
+	<slot />
+
+	<footer class="footer">
+		<div class="container footer-inner">
+			<p class="footer-brand">{footerBrand}</p>
+			<p class="footer-tagline">{footerTagline}</p>
+			<p class="footer-copy">{footerCopy}</p>
+		</div>
+	</footer>
+
+	<style is:global>
+		.container {
+			width: var(--container);
+			max-width: 100%;
+			margin-inline: auto;
+			padding-inline: clamp(1rem, 4vw, 3rem);
+		}
+
+		.header {
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			background: var(--header-bg);
+			backdrop-filter: blur(10px);
+			border-bottom: 1px solid var(--color-border);
+		}
+		.header-inner {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			height: 4rem;
+		}
+		.logo {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: 1.35rem;
+			color: var(--color-text);
+			text-decoration: none;
+		}
+		.logo:hover { text-decoration: none; color: var(--color-accent); }
+		.nav {
+			display: flex;
+			align-items: center;
+			gap: 1.25rem;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
+		.nav a {
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+			text-decoration: none;
+		}
+		.nav a:hover { color: var(--color-text); text-decoration: none; }
+
+		.nav-history-btn.nav-history-btn { text-decoration: none; }
+		.nav-history-btn:hover { color: var(--color-text); }
+		.nav-history-current {
+			pointer-events: none;
+			opacity: 0.85;
+			border-color: var(--color-accent);
+			color: var(--color-accent);
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.6rem 1.25rem;
+			font-family: var(--font-body);
+			font-weight: 600;
+			font-size: 0.95rem;
+			border-radius: var(--radius);
+			border: none;
+			cursor: pointer;
+			text-decoration: none;
+			transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+		}
+		.btn-primary {
+			background: var(--color-accent);
+			color: var(--color-bg);
+		}
+		.btn-primary:hover { background: #5eead4; text-decoration: none; box-shadow: 0 0 24px var(--color-accent-dim); }
+		.btn-ghost {
+			background: transparent;
+			color: var(--color-text);
+			border: 1px solid var(--color-border);
+		}
+		.btn-ghost:hover { background: var(--color-surface-elevated); text-decoration: none; border-color: var(--color-text-muted); }
+		.btn-lg { padding: 0.85rem 1.75rem; font-size: 1rem; }
+
+		.hero {
+			position: relative;
+			padding: 6rem 0;
+			overflow: hidden;
+		}
+		.hero-gradient {
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(ellipse 80% 50% at 50% -20%, var(--color-accent-dim), transparent 60%);
+			pointer-events: none;
+		}
+		.hero-inner {
+			position: relative;
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 2rem;
+			align-items: center;
+		}
+		@media (min-width: 900px) {
+			.hero-inner { grid-template-columns: 1fr 1fr; }
+		}
+		.hero-text { max-width: none; }
+		.hero-image-wrap { order: -1; }
+		@media (min-width: 900px) { .hero-image-wrap { order: 0; } }
+		.hero-image { width: 100%; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
+		.hero-badge {
+			display: inline-block;
+			margin-bottom: 1rem;
+			padding: 0.35rem 0.85rem;
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: var(--color-accent);
+			background: var(--color-accent-dim);
+			border-radius: 999px;
+		}
+		.hero-title {
+			font-family: var(--font-heading);
+			font-weight: 800;
+			font-size: clamp(2.5rem, 5vw, 3.75rem);
+			line-height: 1.1;
+			letter-spacing: -0.02em;
+			margin: 0 0 1.25rem;
+		}
+		.hero-title .highlight { color: var(--color-accent); }
+		.hero-lead {
+			font-size: 1.2rem;
+			color: var(--color-text-muted);
+			margin: 0 0 2rem;
+		}
+		.hero-cta { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+		.section { padding: 5rem 0; }
+		.section-title {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: clamp(1.75rem, 3vw, 2.25rem);
+			margin: 0 0 0.5rem;
+		}
+		.section-lead {
+			color: var(--color-text-muted);
+			font-size: 1.1rem;
+			margin: 0 0 2.5rem;
+		}
+
+		.history-doc { padding-top: 3rem; padding-bottom: 5rem; }
+		.markdown-prose {
+			max-width: 42rem;
+			color: var(--color-text-muted);
+		}
+		.history-doc .markdown-prose {
+			max-width: none;
+		}
+		.markdown-prose :global(h1) {
+			font-family: var(--font-heading);
+			font-weight: 800;
+			font-size: clamp(2rem, 4vw, 2.75rem);
+			color: var(--color-text);
+			margin: 0 0 1rem;
+			line-height: 1.15;
+		}
+		.markdown-prose :global(h2) {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: 1.35rem;
+			color: var(--color-text);
+			margin: 2.5rem 0 0.75rem;
+		}
+		.markdown-prose :global(h2:first-child) { margin-top: 0; }
+		.markdown-prose :global(p) { margin: 0 0 1rem; }
+		.markdown-prose :global(ul),
+		.markdown-prose :global(ol) { margin: 0 0 1rem; padding-left: 1.35rem; }
+		.markdown-prose :global(li) { margin-bottom: 0.35rem; }
+		.markdown-prose :global(a) { color: var(--color-accent); }
+		.markdown-prose :global(strong) { color: var(--color-text); }
+
+		.features-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 1.5rem;
+		}
+		.feature-card {
+			padding: 1.75rem;
+			background: var(--color-surface);
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius-lg);
+			transition: border-color 0.2s, box-shadow 0.2s;
+		}
+		.feature-card:hover {
+			border-color: rgba(34, 211, 238, 0.3);
+			box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.1);
+		}
+		.feature-image-wrap { margin-bottom: 1rem; border-radius: var(--radius); overflow: hidden; }
+		.feature-image { width: 100%; height: auto; display: block; }
+		.feature-icon {
+			font-size: 1.75rem;
+			color: var(--color-accent);
+			margin-bottom: 1rem;
+		}
+		.feature-card h3 {
+			font-family: var(--font-heading);
+			font-weight: 600;
+			font-size: 1.2rem;
+			margin: 0 0 0.5rem;
+		}
+		.feature-card p {
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+		}
+
+		.product { background: var(--color-surface); }
+		.product-content { max-width: none; }
+		.product-technical {
+			color: var(--color-text-muted);
+			font-size: 1.05rem;
+			line-height: 1.65;
+			margin: 0 0 2rem;
+			max-width: min(90ch, 100%);
+		}
+		.product-panels {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+			margin-bottom: 2rem;
+		}
+		@media (min-width: 768px) {
+			.product-panels { grid-template-columns: 1fr 1fr; align-items: start; }
+		}
+		.product-panel {
+			padding: 1.5rem;
+			background: var(--color-bg);
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius-lg);
+		}
+		.product-panel-title {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: 1.1rem;
+			color: var(--color-text);
+			margin: 0 0 1rem;
+		}
+		.product-list,
+		.product-specs-list {
+			margin: 0;
+			padding-left: 1.2rem;
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+			line-height: 1.55;
+		}
+		.product-list li,
+		.product-specs-list li { margin-bottom: 0.65rem; }
+		.product-list li:last-child,
+		.product-specs-list li:last-child { margin-bottom: 0; }
+		.product-specs-list strong { color: var(--color-text); font-weight: 600; }
+		.product-benefits-block {
+			margin-bottom: 1.5rem;
+			padding-bottom: 1.5rem;
+			border-bottom: 1px solid var(--color-border);
+		}
+		.product-history-cta {
+			margin: 0 0 2rem;
+			font-size: 0.95rem;
+			color: var(--color-text-muted);
+		}
+		.product-history-cta a { font-weight: 600; }
+		.product-video { margin-top: 0; }
+		.video-wrap { aspect-ratio: 16/9; border-radius: var(--radius-lg); overflow: hidden; }
+		.video-iframe { width: 100%; height: 100%; border: none; }
+		.video-placeholder {
+			aspect-ratio: 16/9;
+			background: var(--color-surface-elevated);
+			border: 2px dashed var(--color-border);
+			border-radius: var(--radius-lg);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+		}
+		.video-placeholder .video-poster { width: 100%; height: 100%; object-fit: cover; border: none; }
+		.video-placeholder p { margin: 0; font-weight: 600; color: var(--color-text); }
+
+		.cta-inner {
+			max-width: 38rem;
+			width: 100%;
+			margin-inline: auto;
+		}
+		.contact-form {
+			display: flex;
+			flex-direction: column;
+			gap: 1.25rem;
+			margin-bottom: 1.5rem;
+		}
+		.form-row { display: flex; flex-direction: column; gap: 0.4rem; }
+		.form-row label {
+			font-size: 0.9rem;
+			font-weight: 500;
+			color: var(--color-text-muted);
+		}
+		.form-row input,
+		.form-row textarea {
+			padding: 0.75rem 1rem;
+			font-family: var(--font-body);
+			font-size: 1rem;
+			color: var(--color-text);
+			background: var(--color-surface);
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius);
+		}
+		.form-row input::placeholder,
+		.form-row textarea::placeholder { color: var(--color-text-muted); opacity: 0.7; }
+		.form-row input:focus,
+		.form-row textarea:focus {
+			outline: none;
+			border-color: var(--color-accent);
+			box-shadow: 0 0 0 3px var(--color-accent-dim);
+		}
+		.cta-portal { color: var(--color-text-muted); font-size: 0.95rem; margin: 0; }
+
+		.footer {
+			padding: 3rem 0;
+			border-top: 1px solid var(--color-border);
+		}
+		.footer-inner {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 1rem 2rem;
+		}
+		.footer-brand { font-family: var(--font-heading); font-weight: 700; margin: 0; }
+		.footer-tagline { color: var(--color-text-muted); margin: 0; font-size: 0.95rem; }
+		.footer-copy { color: var(--color-text-muted); margin: 0 0 0 auto; font-size: 0.9rem; }
+
+		@media (max-width: 640px) {
+			.nav { display: none; }
+			.hero { padding: 4rem 0; }
+			.hero-cta { flex-direction: column; }
+			.footer-inner { flex-direction: column; align-items: flex-start; }
+			.footer-copy { margin: 0; }
+		}
+	</style>
+</BaseLayout>

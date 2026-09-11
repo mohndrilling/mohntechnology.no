@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <rect width="960" height="540" fill="#1a2442" stroke="#334155" stroke-width="2" stroke-dasharray="8 4" rx="8"/>
+  <polygon points="460,240 460,300 520,270" fill="#22d3ee" fill-opacity="0.8"/>
+  <text x="480" y="400" text-anchor="middle" fill="#8b9bb5" font-family="system-ui, sans-serif" font-size="20" font-weight="600">Video poster / thumbnail</text>
+  <text x="480" y="430" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="14">Replace with poster image or use productVideoUrl in home.md</text>
+</svg>

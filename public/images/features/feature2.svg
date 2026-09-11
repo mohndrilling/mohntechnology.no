@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" fill="none">
+  <rect width="400" height="260" fill="#141c32" stroke="#334155" stroke-width="1.5" stroke-dasharray="6 3" rx="6"/>
+  <text x="200" y="125" text-anchor="middle" fill="#8b9bb5" font-family="system-ui, sans-serif" font-size="14" font-weight="600">Feature 2</text>
+  <text x="200" y="148" text-anchor="middle" fill="#64748b" font-family="system-ui, sans-serif" font-size="12">Real-time analysis</text>
+  <text x="200" y="175" text-anchor="middle" fill="#475569" font-family="system-ui, sans-serif" font-size="10">Replace: public/images/features/feature2.svg</text>
+</svg>

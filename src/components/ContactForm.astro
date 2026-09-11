@@ -1,0 +1,157 @@
+---
+interface Props {
+	lang: 'en' | 'no';
+	contactTitle: string;
+	contactLead: string;
+	formLabels: {
+		name: string;
+		email: string;
+		message: string;
+		submit: string;
+		placeholderName: string;
+		placeholderEmail: string;
+		placeholderMessage: string;
+	};
+	contactPortalText: string;
+	contactPortalLink: string;
+	portalUrl: string;
+}
+
+const { lang, contactTitle, contactLead, formLabels, contactPortalText, contactPortalLink, portalUrl } = Astro.props;
+
+const apiUrl = (import.meta.env.PUBLIC_CONTACT_API_URL as string | undefined)?.trim() ?? '';
+
+const msgSending = lang === 'no' ? 'Sender …' : 'Sending…';
+const msgOk = lang === 'no' ? 'Takk! Vi har mottatt meldingen din.' : 'Thanks! We have received your message.';
+const msgErr =
+	lang === 'no'
+		? 'Kunne ikke sende meldingen. Prøv igjen senere, eller ta kontakt på e-post.'
+		: 'Could not send the message. Please try again later or contact us by email.';
+const msgNocfg =
+	lang === 'no'
+		? 'Kontaktskjemaet er ikke konfigurert (mangler PUBLIC_CONTACT_API_URL).'
+		: 'The contact form is not configured (missing PUBLIC_CONTACT_API_URL).';
+const msgBad =
+	lang === 'no' ? 'Sjekk at alle felt er fylt ut riktig.' : 'Please check that all fields are valid.';
+---
+
+<section id="contact" class="section cta">
+	<div class="container cta-inner">
+		<h2 class="section-title">{contactTitle}</h2>
+		<p class="section-lead">{contactLead}</p>
+		<form class="contact-form" method="post" action="#" novalidate data-contact-api={apiUrl}>
+			<div class="form-honeypot" aria-hidden="true">
+				<label for={`company-${lang}`}>Company</label>
+				<input type="text" id={`company-${lang}`} name="company" tabindex="-1" autocomplete="off" />
+			</div>
+			<div class="form-row">
+				<label for={`name-${lang}`}>{formLabels.name}</label>
+				<input id={`name-${lang}`} name="name" type="text" required placeholder={formLabels.placeholderName} />
+			</div>
+			<div class="form-row">
+				<label for={`email-${lang}`}>{formLabels.email}</label>
+				<input id={`email-${lang}`} name="email" type="email" required placeholder={formLabels.placeholderEmail} />
+			</div>
+			<div class="form-row">
+				<label for={`message-${lang}`}>{formLabels.message}</label>
+				<textarea id={`message-${lang}`} name="message" rows="4" placeholder={formLabels.placeholderMessage} required></textarea>
+			</div>
+			<p class="form-status" role="status" aria-live="polite" hidden></p>
+			<button type="submit" class="btn btn-primary btn-lg contact-submit">{formLabels.submit}</button>
+		</form>
+		<p class="cta-portal">
+			{contactPortalText} <a href={portalUrl} target="_blank" rel="noopener">{contactPortalLink}</a>.
+		</p>
+	</div>
+</section>
+
+<style>
+	.form-honeypot {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+	.form-status {
+		margin: 0 0 1rem;
+		font-size: 0.95rem;
+		color: var(--color-text-muted);
+	}
+	.form-status[data-kind='ok'] {
+		color: var(--color-accent);
+	}
+	.form-status[data-kind='err'] {
+		color: #f87171;
+	}
+	[data-theme='light'] .form-status[data-kind='err'] {
+		color: #b91c1c;
+	}
+</style>
+
+<script define:vars={{ apiUrl, msgSending, msgOk, msgErr, msgNocfg, msgBad }}>
+	function wireForm(form) {
+		const url = form.dataset.contactApi?.trim() || '';
+		const statusEl = form.querySelector('.form-status');
+		const submitBtn = form.querySelector('.contact-submit');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			if (!statusEl || !submitBtn) return;
+
+			if (!url) {
+				statusEl.hidden = false;
+				statusEl.dataset.kind = 'err';
+				statusEl.textContent = msgNocfg;
+				return;
+			}
+
+			const fd = new FormData(form);
+			const payload = {
+				name: String(fd.get('name') || '').trim(),
+				email: String(fd.get('email') || '').trim(),
+				message: String(fd.get('message') || '').trim(),
+				company: String(fd.get('company') || '').trim(),
+			};
+
+			statusEl.hidden = false;
+			statusEl.dataset.kind = '';
+			statusEl.textContent = msgSending;
+			submitBtn.disabled = true;
+
+			try {
+				const res = await fetch(url, {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(payload),
+				});
+				const data = await res.json().catch(() => ({}));
+
+				if (res.ok && (data.ok === 'sent' || data.ok === 'logged')) {
+					statusEl.dataset.kind = 'ok';
+					statusEl.textContent = msgOk;
+					form.reset();
+				} else {
+					statusEl.dataset.kind = 'err';
+					statusEl.textContent = res.status === 400 ? msgBad : msgErr;
+				}
+			} catch {
+				statusEl.dataset.kind = 'err';
+				statusEl.textContent = msgErr;
+			} finally {
+				submitBtn.disabled = false;
+			}
+		});
+	}
+
+	document.querySelectorAll('form.contact-form[data-contact-api]').forEach((form) => {
+		if (form instanceof HTMLFormElement) wireForm(form);
+	});
+</script>

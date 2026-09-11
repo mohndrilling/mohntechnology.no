@@ -1,0 +1,75 @@
+---
+interface Props {
+	locale: 'en' | 'no';
+	/** Target URL for the English version of the current page (default `/`) */
+	linkToEn?: string;
+	/** Target URL for the Norwegian version of the current page (default `/no/`) */
+	linkToNo?: string;
+}
+const { locale, linkToEn = '/', linkToNo = '/no/' } = Astro.props;
+const enIsLink = locale === 'no';
+const noIsLink = locale === 'en';
+---
+<div class="controls">
+	<div class="locale-switch" role="group" aria-label="Language">
+		{enIsLink ? (
+			<a href={linkToEn} class="locale-link">EN</a>
+		) : (
+			<span class="locale-link active" aria-current="true">EN</span>
+		)}
+		<span class="locale-sep" aria-hidden="true">|</span>
+		{noIsLink ? (
+			<a href={linkToNo} class="locale-link">Norsk</a>
+		) : (
+			<span class="locale-link active" aria-current="true">Norsk</span>
+		)}
+	</div>
+	<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+		<span class="theme-icon dark-icon" aria-hidden="true">☀</span>
+		<span class="theme-icon light-icon" aria-hidden="true">☾</span>
+	</button>
+</div>
+
+<style>
+	.controls {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.locale-switch {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.9rem;
+	}
+	.locale-link {
+		color: var(--color-text-muted);
+		text-decoration: none;
+		padding: 0.2rem 0.35rem;
+		border-radius: 4px;
+	}
+	.locale-link:hover { color: var(--color-text); text-decoration: none; }
+	.locale-link.active { color: var(--color-accent); font-weight: 600; }
+	.locale-link[aria-current="true"] { color: var(--color-accent); font-weight: 600; }
+	.locale-sep { color: var(--color-text-muted); opacity: 0.6; }
+	.theme-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0;
+		background: var(--color-surface-elevated);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		cursor: pointer;
+		color: var(--color-text-muted);
+		font-size: 1.1rem;
+		transition: color 0.2s, background 0.2s;
+	}
+	.theme-toggle:hover { color: var(--color-accent); background: var(--color-surface); }
+	.theme-icon { line-height: 1; }
+	[data-theme="light"] .dark-icon { display: none; }
+	[data-theme="dark"] .light-icon { display: none; }
+	:root:not([data-theme]) .light-icon { display: none; }
+</style>

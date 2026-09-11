@@ -1,0 +1,331 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ProductSlideshow from '../components/ProductSlideshow.astro';
+import FaqTabs from '../components/FaqTabs.astro';
+import { getEntry } from 'astro:content';
+
+const locale = 'en';
+const home = await getEntry('pages', 'home.en');
+if (!home) throw new Error('Content page "home.en" not found');
+const {
+	title,
+	description,
+	navFeatures,
+	navProduct,
+	navContact,
+	navHistory,
+	navFaq,
+	navPortal,
+	hero,
+	featuresTitle,
+	featuresLead,
+	features,
+	productTitle,
+	productLead,
+	productTechnical,
+	productPerformanceTitle,
+	productPerformance,
+	productSpecsTitle,
+	productSpecs,
+	productBenefitsTitle,
+	productBenefits,
+	productHistoryCta,
+	productSlideshow,
+	faqTitle,
+	faqLead,
+	faqTabs,
+	contactTitle,
+	contactLead,
+	contactPortalText,
+	contactPortalLink,
+	portalUrl,
+	footerBrand,
+	footerTagline,
+	footerCopy,
+} = home.data;
+
+const historyPageHref = '/history';
+
+const formLabels = locale === 'no' ? { name: 'Navn', email: 'E-post', message: 'Melding', submit: 'Send melding', placeholderName: 'Ditt navn', placeholderEmail: 'deg@firma.no', placeholderMessage: 'Fortell oss om din interesse for Salmoscan…' } : { name: 'Name', email: 'Email', message: 'Message', submit: 'Send message', placeholderName: 'Your name', placeholderEmail: 'you@company.com', placeholderMessage: 'Tell us about your interest in Salmoscan…' };
+---
+<MarketingLayout
+	title={title}
+	description={description}
+	lang={locale}
+	homePath="/"
+	historyPath="/history"
+	currentPage="home"
+	navFeatures={navFeatures}
+	navProduct={navProduct}
+	navContact={navContact}
+	navHistory={navHistory}
+	navFaq={navFaq}
+	navPortal={navPortal}
+	portalUrl={portalUrl}
+	footerBrand={footerBrand}
+	footerTagline={footerTagline}
+	footerCopy={footerCopy}
+>
+	<main>
+		<section class="hero">
+			<div class="container hero-inner">
+				{hero.image && (
+					<div class="hero-image-wrap">
+						<img src={hero.image} alt="" class="hero-image" width="800" height="500" />
+					</div>
+				)}
+				<div class="hero-text">
+					<p class="hero-badge">{hero.badge}</p>
+					<h1 class="hero-title">
+						{hero.titleBefore}<span class="highlight">{hero.titleHighlight}</span>
+					</h1>
+					<p class="hero-lead">{hero.lead}</p>
+					<div class="hero-cta">
+						<a href="#contact" class="btn btn-primary btn-lg">{hero.ctaPrimary}</a>
+						<a href="#product" class="btn btn-ghost btn-lg">{hero.ctaSecondary}</a>
+					</div>
+				</div>
+			</div>
+			<div class="hero-gradient" aria-hidden="true"></div>
+		</section>
+
+		<section id="features" class="section features">
+			<div class="container">
+				<h2 class="section-title">{featuresTitle}</h2>
+				<p class="section-lead">{featuresLead}</p>
+				<div class="features-grid">
+					{features.map((feature) => (
+						<article class="feature-card">
+							{feature.image && (
+								<div class="feature-image-wrap">
+									<img src={feature.image} alt="" class="feature-image" width="400" height="260" />
+								</div>
+							)}
+							{!feature.image && <div class="feature-icon" aria-hidden="true">{feature.icon}</div>}
+							<h3>{feature.title}</h3>
+							<p>{feature.description}</p>
+						</article>
+					))}
+				</div>
+			</div>
+		</section>
+
+		<section id="product" class="section product">
+			<div class="container product-inner">
+				<div class="product-content">
+					<h2 class="section-title">{productTitle}</h2>
+					<p class="section-lead">{productLead}</p>
+					<p class="product-technical">{productTechnical}</p>
+					<div class="product-panels">
+						<div class="product-panel">
+							<h3 class="product-panel-title">{productPerformanceTitle}</h3>
+							<ul class="product-list">
+								{productPerformance.map((item) => (
+									<li>{item}</li>
+								))}
+							</ul>
+						</div>
+						<div class="product-panel">
+							<h3 class="product-panel-title">{productSpecsTitle}</h3>
+							<ul class="product-specs-list">
+								{productSpecs.map(({ label, value }) => (
+									<li>
+										<strong>{label}</strong> {value}
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
+					<div class="product-benefits-block">
+						<h3 class="product-panel-title">{productBenefitsTitle}</h3>
+						<ul class="product-list">
+							{productBenefits.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</div>
+					<p class="product-history-cta">
+						<a href={historyPageHref}>{productHistoryCta}</a>
+					</p>
+					<ProductSlideshow slides={productSlideshow} lang={locale} headingLabel={productTitle} />
+				</div>
+			</div>
+		</section>
+
+		<FaqTabs lang={locale} faqTitle={faqTitle} faqLead={faqLead} faqTabs={faqTabs} />
+
+		<ContactForm
+			lang={locale}
+			contactTitle={contactTitle}
+			contactLead={contactLead}
+			formLabels={formLabels}
+			contactPortalText={contactPortalText}
+			contactPortalLink={contactPortalLink}
+			portalUrl={portalUrl}
+		/>
+	</main>
+
+	<style>
+		.hero {
+			position: relative;
+			padding: 6rem 0;
+			overflow: hidden;
+		}
+		.hero-gradient {
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(ellipse 80% 50% at 50% -20%, var(--color-accent-dim), transparent 60%);
+			pointer-events: none;
+		}
+		.hero-inner {
+			position: relative;
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 2rem;
+			align-items: center;
+		}
+		@media (min-width: 900px) {
+			.hero-inner { grid-template-columns: 1fr 1fr; }
+		}
+		.hero-text { max-width: none; }
+		.hero-image-wrap { order: -1; }
+		@media (min-width: 900px) { .hero-image-wrap { order: 0; } }
+		.hero-image { width: 100%; height: auto; border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
+		.hero-badge {
+			display: inline-block;
+			margin-bottom: 1rem;
+			padding: 0.35rem 0.85rem;
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: var(--color-accent);
+			background: var(--color-accent-dim);
+			border-radius: 999px;
+		}
+		.hero-title {
+			font-family: var(--font-heading);
+			font-weight: 800;
+			font-size: clamp(2.5rem, 5vw, 3.75rem);
+			line-height: 1.1;
+			letter-spacing: -0.02em;
+			margin: 0 0 1.25rem;
+		}
+		.hero-title .highlight { color: var(--color-accent); }
+		.hero-lead {
+			font-size: 1.2rem;
+			color: var(--color-text-muted);
+			margin: 0 0 2rem;
+		}
+		.hero-cta { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+		.section { padding: 5rem 0; }
+		.section-title {
+			font-family: var(--font-heading);
+			font-weight: 700;
+			font-size: clamp(1.75rem, 3vw, 2.25rem);
+			margin: 0 0 0.5rem;
+		}
+		.section-lead {
+			color: var(--color-text-muted);
+			font-size: 1.1rem;
+			margin: 0 0 2.5rem;
+		}
+
+		.features-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 1.5rem;
+		}
+		.feature-card {
+			padding: 1.75rem;
+			background: var(--color-surface);
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius-lg);
+			transition: border-color 0.2s, box-shadow 0.2s;
+		}
+		.feature-card:hover {
+			border-color: rgba(34, 211, 238, 0.3);
+			box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.1);
+		}
+		.feature-image-wrap { margin-bottom: 1rem; border-radius: var(--radius); overflow: hidden; }
+		.feature-image { width: 100%; height: auto; display: block; }
+		.feature-icon {
+			font-size: 1.75rem;
+			color: var(--color-accent);
+			margin-bottom: 1rem;
+		}
+		.feature-card h3 {
+			font-family: var(--font-heading);
+			font-weight: 600;
+			font-size: 1.2rem;
+			margin: 0 0 0.5rem;
+		}
+		.feature-card p {
+			margin: 0;
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+		}
+
+		.product { background: var(--color-surface); }
+		.product-content { max-width: none; }
+		.video-wrap { aspect-ratio: 16/9; border-radius: var(--radius-lg); overflow: hidden; }
+		.video-iframe { width: 100%; height: 100%; border: none; }
+		.video-placeholder {
+			aspect-ratio: 16/9;
+			background: var(--color-surface-elevated);
+			border: 2px dashed var(--color-border);
+			border-radius: var(--radius-lg);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+		}
+		.video-placeholder .video-poster { width: 100%; height: 100%; object-fit: cover; border: none; }
+		.video-placeholder p { margin: 0; font-weight: 600; color: var(--color-text); }
+
+		.cta-inner {
+			max-width: 38rem;
+			width: 100%;
+			margin-inline: auto;
+		}
+		.contact-form {
+			display: flex;
+			flex-direction: column;
+			gap: 1.25rem;
+			margin-bottom: 1.5rem;
+		}
+		.form-row { display: flex; flex-direction: column; gap: 0.4rem; }
+		.form-row label {
+			font-size: 0.9rem;
+			font-weight: 500;
+			color: var(--color-text-muted);
+		}
+		.form-row input,
+		.form-row textarea {
+			padding: 0.75rem 1rem;
+			font-family: var(--font-body);
+			font-size: 1rem;
+			color: var(--color-text);
+			background: var(--color-surface);
+			border: 1px solid var(--color-border);
+			border-radius: var(--radius);
+		}
+		.form-row input::placeholder,
+		.form-row textarea::placeholder { color: var(--color-text-muted); opacity: 0.7; }
+		.form-row input:focus,
+		.form-row textarea:focus {
+			outline: none;
+			border-color: var(--color-accent);
+			box-shadow: 0 0 0 3px var(--color-accent-dim);
+		}
+		.cta-portal { color: var(--color-text-muted); font-size: 0.95rem; margin: 0; }
+
+		@media (max-width: 640px) {
+			.hero { padding: 4rem 0; }
+			.hero-cta { flex-direction: column; }
+		}
+	</style>
+</MarketingLayout>
