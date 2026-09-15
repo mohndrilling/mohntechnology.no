@@ -1,25 +1,115 @@
 ---
+import { getCompanyHome } from '../lib/companyContent';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
 	title: string;
 	description?: string;
 	lang: 'en' | 'no';
-	footerBrand: string;
-	footerTagline: string;
-	footerCopy: string;
+	/** When false, skip the layout top bar (company home has its own sticky header). */
+	showSiteHeader?: boolean;
+	/** Override language switch target (defaults to the other locale home). */
+	alternateLangHref?: string;
 }
 
-const { title, description, lang, footerBrand, footerTagline, footerCopy } = Astro.props;
+const { title, description, lang, showSiteHeader = true, alternateLangHref } = Astro.props;
+const home = await getCompanyHome(lang);
+const data = home.data;
+
+const homePath = lang === 'no' ? '/no/' : '/';
+const otherLangHref = alternateLangHref ?? (lang === 'no' ? '/' : '/no/');
+const otherLangLabel = lang === 'no' ? 'English' : 'Norsk';
+
+function resolveHref(href: string) {
+	if (href.startsWith('http') || href.startsWith('/')) return href;
+	if (href.startsWith('#')) return `${homePath}${href}`;
+	return href;
+}
+
+const navItems = data.footerNav.map((item) => ({
+	...item,
+	href: resolveHref(item.href),
+}));
+const mid = Math.ceil(navItems.length / 2);
+const navCol1 = navItems.slice(0, mid);
+const navCol2 = navItems.slice(mid);
+const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 ---
 <BaseLayout title={title} description={description} lang={lang} brand="mohn">
+	{
+		showSiteHeader && (
+			<header class="site-top">
+				<div class="container site-top-inner">
+					<a class="site-top-logo" href={homePath} aria-label={data.footerBrand}>
+						<img
+							src="/media/company/brand/mohn-technology-logo.png"
+							alt={data.footerBrand}
+							width="180"
+							height="125"
+							decoding="async"
+						/>
+					</a>
+					<a class="site-top-lang" href={otherLangHref}>
+						{otherLangLabel}
+					</a>
+				</div>
+			</header>
+		)
+	}
 	<slot />
 
-	<footer class="footer">
-		<div class="container footer-inner">
-			<p class="footer-brand">{footerBrand}</p>
-			<p class="footer-tagline">{footerTagline}</p>
-			<p class="footer-copy">{footerCopy}</p>
+	<footer class="site-footer">
+		<div class="container site-footer-inner">
+			<div class="site-footer-top">
+				<nav class="site-footer-nav" aria-label={lang === 'no' ? 'Bunnmeny' : 'Footer'}>
+					<ul class="site-footer-nav-col">
+						{navCol1.map((item) => (
+							<li>
+								<a href={item.href}>{item.label}</a>
+							</li>
+						))}
+					</ul>
+					<ul class="site-footer-nav-col">
+						{navCol2.map((item) => (
+							<li>
+								<a href={item.href}>{item.label}</a>
+							</li>
+						))}
+					</ul>
+				</nav>
+
+				<div class="site-footer-brand">
+					<p class="site-footer-logo">{data.footerBrand}</p>
+					<a class="site-footer-email" href={`mailto:${data.contactEmail}`}>{data.contactEmail}</a>
+					<address class="site-footer-address">
+						{data.addressLines.map((line) => (
+							<span>{line}</span>
+						))}
+					</address>
+				</div>
+			</div>
+
+			<div class="site-footer-bottom">
+				<ul class="site-footer-legal">
+					{data.footerLegal.map((item) => (
+						<li>
+							<a href={item.href}>{item.label}</a>
+						</li>
+					))}
+				</ul>
+				<div class="site-footer-meta">
+					{
+						linkedInUrl ? (
+							<p class="site-footer-social">
+								<a href={linkedInUrl} target="_blank" rel="noopener noreferrer">
+									{data.footerLinkedInLabel}
+								</a>
+							</p>
+						) : null
+					}
+					<p class="site-footer-copy">{data.footerCopy}</p>
+				</div>
+			</div>
 		</div>
 	</footer>
 
@@ -79,40 +169,197 @@ const { title, description, lang, footerBrand, footerTagline, footerCopy } = Ast
 			max-width: 42rem;
 		}
 
-		.footer {
-			padding: 2.5rem 0;
-			border-top: 1px solid var(--color-border);
+		.site-top {
+			border-bottom: 1px solid var(--color-border);
+			background: var(--header-bg);
+			backdrop-filter: blur(12px);
+			position: sticky;
+			top: 0;
+			z-index: 50;
 		}
-		.footer-inner {
+		.site-top-inner {
 			display: flex;
-			flex-wrap: wrap;
 			align-items: center;
-			gap: 1rem 2rem;
+			justify-content: space-between;
+			min-height: 3.5rem;
+			gap: 1rem;
 		}
-		.footer-brand {
-			font-family: var(--font-heading);
-			font-weight: 700;
-			margin: 0;
+		.site-top-logo {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			line-height: 0;
 		}
-		.footer-tagline {
+		.site-top-logo img {
+			display: block;
+			height: 2.4rem;
+			width: auto;
+		}
+		.site-top-logo:hover {
+			opacity: 0.88;
+			text-decoration: none;
+		}
+		[data-theme='light'] .site-top-logo img {
+			filter: invert(1);
+		}
+		.site-top-lang {
 			color: var(--color-text-muted);
-			margin: 0;
-			font-size: 0.95rem;
+			font-size: 0.92rem;
+			font-weight: 600;
+			text-decoration: none;
 		}
-		.footer-copy {
-			color: var(--color-text-muted);
-			margin: 0 0 0 auto;
-			font-size: 0.9rem;
+		.site-top-lang:hover {
+			color: var(--color-accent);
 		}
 
-		@media (max-width: 640px) {
-			.footer-inner {
-				flex-direction: column;
-				align-items: flex-start;
+		.site-footer {
+			margin-top: 3rem;
+			padding: clamp(2.75rem, 6vw, 4.5rem) 0 clamp(1.75rem, 4vw, 2.5rem);
+			background: #14202a;
+			color: #e8eef3;
+		}
+		[data-theme='light'] .site-footer {
+			background: #1a2833;
+			color: #e8eef3;
+		}
+		.site-footer a {
+			color: inherit;
+			text-decoration: underline;
+			text-underline-offset: 0.18em;
+			text-decoration-thickness: 1px;
+		}
+		.site-footer a:hover {
+			color: var(--color-accent-hover);
+		}
+		.site-footer-top {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 2.5rem 3rem;
+			margin-bottom: clamp(2.5rem, 6vw, 4rem);
+		}
+		.site-footer-nav {
+			display: flex;
+			gap: clamp(2rem, 6vw, 4.5rem);
+		}
+		.site-footer-nav-col {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: grid;
+			gap: 0.65rem;
+		}
+		.site-footer-nav-col a {
+			font-size: 1rem;
+			font-weight: 500;
+			text-decoration: none;
+		}
+		.site-footer-nav-col a:hover {
+			text-decoration: underline;
+		}
+		.site-footer-brand {
+			text-align: right;
+			max-width: 22rem;
+			margin-left: auto;
+		}
+		.site-footer-logo {
+			margin: 0 0 0.85rem;
+			font-family: var(--font-heading);
+			font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+			font-weight: 700;
+			letter-spacing: -0.03em;
+		}
+		.site-footer-email {
+			display: inline-block;
+			margin-bottom: 0.55rem;
+			font-size: 0.98rem;
+		}
+		.site-footer-address {
+			display: grid;
+			gap: 0.15rem;
+			font-style: normal;
+			font-size: 0.92rem;
+			line-height: 1.45;
+			opacity: 0.85;
+		}
+		.site-footer-bottom {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: flex-end;
+			gap: 1.25rem 2rem;
+		}
+		.site-footer-legal {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.65rem 1.25rem;
+			font-size: 0.9rem;
+		}
+		.site-footer-meta {
+			text-align: right;
+		}
+		.site-footer-social {
+			margin: 0 0 0.45rem;
+			font-size: 0.9rem;
+		}
+		.site-footer-copy {
+			margin: 0;
+			font-size: 0.82rem;
+			opacity: 0.7;
+		}
+
+		@media (max-width: 720px) {
+			.site-footer-brand,
+			.site-footer-meta {
+				text-align: left;
+				margin-left: 0;
 			}
-			.footer-copy {
-				margin: 0;
+			.site-footer-nav {
+				width: 100%;
 			}
+		}
+
+		.legal-page {
+			padding: 2.5rem 0 1rem;
+			max-width: 46rem;
+		}
+		.legal-draft {
+			margin: 0 0 1.5rem;
+			padding: 0.85rem 1rem;
+			border-left: 3px solid var(--color-accent);
+			background: var(--color-surface);
+			color: var(--color-text-muted);
+			font-size: 0.95rem;
+			line-height: 1.5;
+		}
+		.legal-updated {
+			margin: 0 0 1.75rem;
+			color: var(--color-text-muted);
+			font-size: 0.9rem;
+		}
+		.legal-body :global(h2) {
+			font-family: var(--font-heading);
+			font-size: 1.25rem;
+			margin: 2rem 0 0.65rem;
+		}
+		.legal-body :global(h3) {
+			font-family: var(--font-heading);
+			font-size: 1.05rem;
+			margin: 1.5rem 0 0.5rem;
+		}
+		.legal-body :global(p),
+		.legal-body :global(li) {
+			color: var(--color-text-muted);
+			line-height: 1.6;
+		}
+		.legal-body :global(ul) {
+			padding-left: 1.2rem;
+		}
+		.legal-body :global(a) {
+			color: var(--color-accent);
 		}
 	</style>
 </BaseLayout>

@@ -2,18 +2,33 @@
 title: Mohn Technology – Real-time operational insight for aquaculture
 description: Computer vision for Salmoscan, Codcam, and Rivercam — hardware, models, and portals from Bergen, Norway.
 
-navProducts: Products
-navProjects: Work
-navAbout: Platform
+navDeliver: What we deliver
+navProjects: Customer stories
+navAbout: About
 navContact: Contact
 navSalmoscan: Salmoscan
 navCta: Book a call
+navProductsColumn: Products
+
+deliverMarkets:
+  - title: Treatment & wellboat
+    blurb: Population-level welfare and process data in pipe flow during delousing and related operations.
+    product: Salmoscan
+    cta: See Salmoscan
+  - title: Cod farming
+    blurb: Species-specific biomass and welfare where salmon-centric cameras fall short.
+    product: Codcam
+    cta: See Codcam
+  - title: Wild fish & rivers
+    blurb: Long deployments for population insight, pink salmon, and wild salmonids.
+    product: Rivercam
+    cta: See Rivercam
 
 hero:
   brand: Mohn Technology
   title: Computer vision that turns fish passage into operational insight
   lead: Hardware, AI models, and portals for aquaculture and wild-fish monitoring — delivered as Salmoscan, Codcam, and Rivercam.
-  ctaPrimary: See products
+  ctaPrimary: What we deliver
   ctaSecondary: Book a call
   media:
     kind: video
@@ -31,79 +46,18 @@ problemItems:
   - title: Cod farming without species-specific vision
     body: Cod production is scaling fast, while camera and AI tools remain geared to salmon — weak biomass and welfare insight for the species that is actually in the pen.
 
-productsTitle: Salmoscan, Codcam, and Rivercam
-productsLead: Three named product lines on one stack — pick a product for applications, proof, and portal access.
+productsTitle: Our products
+productsLead: Named product lines — same technology stack, different operational doors. Open a product page for the problem, the solution, and portal access.
 products:
-  - title: Salmoscan
-    description: In-pipe scanning on wellboats and treatment lines for salmon and trout. Counts, biomass, lice, scale loss, and wounds where fish pass the camera — for welfare and process control during operations.
-    edge: Built for delousing workflows and partner install bases, not another pen camera.
-    applicationsTitle: Applications
-    applications:
-      - Wellboat and treatment-vessel pipe flow
-      - Before/after treatment step comparison
-      - Population-level lice, scale loss, and wound insight
-      - Count and biomass support for operations and contracts
-    proofLine: Commercial units delivered; in-pipe scanning verified under normal wellboat operations.
-    infoCta: Product site
-    infoHref: /salmoscan/
-    infoExternal: false
-    portalCta: Customer portal
-    portalHref: https://portal.salmoscan.no
-    portalExternal: true
-    demoCta: Book a call
-    demoHref: "#contact"
-    media:
-      kind: image
-      label: Salmoscan on a treatment vessel
-      need: Photo or short video of Salmoscan mounted in pipe flow on a wellboat/treatment line — wet deck, real install, readable scale of the unit. Do not reuse a generic studio crop as the only brand image.
-      message: This is operational hardware in the flow — where scanning actually happens.
-  - title: Codcam
-    description: Species-specific computer vision for biomass and welfare in cod farming — where general pen cameras fall short.
-    edge: Cod-specific AI, including a tailored biomass path for the strain that dominates current stock.
-    applicationsTitle: Applications
-    applications:
-      - Cod pen biomass monitoring
-      - Welfare observation tuned to cod morphology
-      - Production planning as cod volume scales
-      - Sites where salmon-centric cameras underperform
-    proofLine: Cod-specific models in development and partnership path for the dominant farming strain.
-    infoCta: Request info
-    infoHref: "#contact"
-    infoExternal: false
-    portalCta: Request portal access
-    portalHref: "#contact"
-    portalExternal: false
-    demoCta: Book a call
-    demoHref: "#contact"
-    media:
-      kind: image
-      label: Codcam in a cod farming context
-      need: Photo of Codcam hardware or a clear view of a cod pen / farm install context with the camera system visible. Must read as cod aquaculture — not a Salmoscan or salmon wellboat image.
-      message: Cod needs its own vision tools — different fish, different farm reality.
-  - title: Rivercam
-    description: Autonomous cameras for rivers and coastal sites — population insight, pink salmon, and monitoring of wild salmonids for operators and research partners.
-    edge: Edge processing and low-maintenance hardware for long deployments where bandwidth and access are limited.
-    applicationsTitle: Applications
-    applications:
-      - River and fjord population monitoring
-      - Pink salmon / invasive species observation
-      - Wild salmonid programmes tied to regulation
-      - Long deployments with limited site access
-    proofLine: 20+ monitoring systems in operation across river and coastal sites.
-    infoCta: Request info
-    infoHref: "#contact"
-    infoExternal: false
-    portalCta: Request portal access
-    portalHref: "#contact"
-    portalExternal: false
-    demoCta: Book a call
-    demoHref: "#contact"
-    media:
-      kind: video
-      src: /media/company/products/rivercam/20260822_065934_978.mp4
-      label: Rivercam in a river or coastal site
-      need: Underwater or bankside photo of a Rivercam/FRS-style unit in a Norwegian river or coastal mount — water, structure, and environment visible. Not a portal UI screenshot and not Salmoscan hardware.
-      message: Wild-fish insight comes from cameras that stay in the water for the long haul.
+  - slug: salmoscan
+    title: Salmoscan
+    blurb: In-pipe scanning on wellboats and treatment lines for salmon and trout.
+  - slug: codcam
+    title: Codcam
+    blurb: Species-specific biomass and welfare vision for cod farming.
+  - slug: rivercam
+    title: Rivercam
+    blurb: Autonomous cameras for rivers, coastal sites, and wild-fish programmes.
 
 proof:
   - value: 20+
@@ -112,10 +66,8 @@ proof:
     label: Salmoscan units with industry customers
   - value: Cod-specific
     label: Codcam models built for cod, not reused salmon vision
-  - value: One stack
-    label: Hardware, models, and portals across all three products
 
-projectsTitle: Work
+projectsTitle: Customer stories
 projectsLead: Selected deployments — place, need, and what we delivered.
 projects:
   - tag: Salmoscan
@@ -149,9 +101,12 @@ projects:
       need: Cod farm or R&D setting with Codcam relevance visible (pen, handling, or sensor install). Must not be a salmon wellboat image.
       message: Codcam is a product line with a real farming context — not a renamed salmon camera.
 
-aboutTitle: Platform
+aboutTitle: About
 aboutLead: Core AI models and data, proprietary marine hardware, and product portals — designed and built in Bergen.
 aboutBody: Mohn Technology sells hardware with ongoing support and subscription access to insight portals. The commercial focus is Salmoscan, Codcam, and Rivercam — one technology stack, three operational doors.
+
+teamTitle: Team
+teamLead: The people behind Salmoscan, Codcam, and Rivercam — in Bergen.
 
 openTitle: Open to
 openLead: Outside the three products, we take selected conversations.
@@ -183,4 +138,24 @@ addressLines:
 footerBrand: Mohn Technology
 footerTagline: Operational insight through computer vision
 footerCopy: "© Mohn Technology AS"
+footerNav:
+  - label: What we deliver
+    href: "#deliver"
+  - label: Customer stories
+    href: "#work"
+  - label: Salmoscan
+    href: "/products/salmoscan/"
+  - label: About
+    href: "#about"
+  - label: Careers
+    href: "#about"
+  - label: Contact
+    href: "#contact"
+footerLegal:
+  - label: Privacy
+    href: "/privacy/"
+  - label: Cookies
+    href: "/cookies/"
+footerLinkedInLabel: Follow us on LinkedIn
+footerLinkedInUrl: ""
 ---

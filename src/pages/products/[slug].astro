@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import ProductPage from '../../components/ProductPage.astro';
+import { productPath } from '../../lib/productPaths';
+
+export async function getStaticPaths() {
+	const entries = await getCollection('products', ({ data }) => data.lang === 'en');
+	return entries.map((entry) => ({
+		params: { slug: entry.data.slug },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+const alternateLangHref = productPath('no', entry.data.slug);
+---
+<ProductPage lang="en" alternateLangHref={alternateLangHref} data={entry.data} />

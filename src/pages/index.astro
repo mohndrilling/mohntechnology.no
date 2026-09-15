@@ -1,11 +1,10 @@
 ---
 import CompanyLayout from '../layouts/CompanyLayout.astro';
 import CompanyHome from '../components/CompanyHome.astro';
-import { getEntry } from 'astro:content';
+import { getCompanyHome } from '../lib/companyContent';
 
 const locale = 'en';
-const page = await getEntry('company', 'home.en');
-if (!page) throw new Error('Content page "company/home.en" not found');
+const page = await getCompanyHome(locale);
 const data = page.data;
 
 const formLabels = {
@@ -22,19 +21,17 @@ const formLabels = {
 	title={data.title}
 	description={data.description}
 	lang={locale}
-	footerBrand={data.footerBrand}
-	footerTagline={data.footerTagline}
-	footerCopy={data.footerCopy}
+	showSiteHeader={false}
 >
 	<CompanyHome
 		lang={locale}
 		homePath="/"
-		navProducts={data.navProducts}
+		navDeliver={data.navDeliver}
 		navProjects={data.navProjects}
 		navAbout={data.navAbout}
-		navOpen={data.openTitle}
 		navContact={data.navContact}
-		navCta={data.navCta}
+		navProductsColumn={data.navProductsColumn}
+		deliverMarkets={data.deliverMarkets}
 		hero={data.hero}
 		problemTitle={data.problemTitle}
 		problemLead={data.problemLead}
@@ -49,6 +46,8 @@ const formLabels = {
 		aboutTitle={data.aboutTitle}
 		aboutLead={data.aboutLead}
 		aboutBody={data.aboutBody}
+		teamTitle={data.teamTitle}
+		teamLead={data.teamLead}
 		openTitle={data.openTitle}
 		openLead={data.openLead}
 		openItems={data.openItems}

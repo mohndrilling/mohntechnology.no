@@ -1,0 +1,19 @@
+---
+import CompanyLayout from '../layouts/CompanyLayout.astro';
+import { getEntry, render } from 'astro:content';
+
+const page = await getEntry('legal', 'cookies.en');
+if (!page) throw new Error('Missing legal/cookies.en');
+const { Content } = await render(page);
+const updatedLabel = 'Last updated';
+---
+<CompanyLayout title={`${page.data.title} – Mohn Technology`} description={page.data.description} lang="en" alternateLangHref="/no/informasjonskapsler/">
+	<article class="container legal-page">
+		<p class="legal-draft">{page.data.draftNotice}</p>
+		<h1 class="section-title">{page.data.title}</h1>
+		<p class="legal-updated">{updatedLabel}: {page.data.updated}</p>
+		<div class="legal-body">
+			<Content />
+		</div>
+	</article>
+</CompanyLayout>

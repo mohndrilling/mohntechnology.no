@@ -103,21 +103,9 @@ const mediaPlaceholderSchema = z.object({
 });
 
 const companyProductSchema = z.object({
+	slug: z.string(),
 	title: z.string(),
-	description: z.string(),
-	edge: z.string().optional(),
-	applicationsTitle: z.string(),
-	applications: z.array(z.string()).min(1),
-	proofLine: z.string().optional(),
-	infoCta: z.string(),
-	infoHref: z.string(),
-	infoExternal: z.boolean().optional(),
-	portalCta: z.string(),
-	portalHref: z.string(),
-	portalExternal: z.boolean().optional(),
-	demoCta: z.string().optional(),
-	demoHref: z.string().optional(),
-	media: mediaPlaceholderSchema,
+	blurb: z.string(),
 });
 
 const companyProofSchema = z.object({
@@ -146,6 +134,33 @@ const companyOpenItemSchema = z.object({
 	href: z.string(),
 });
 
+const productPageSchema = z.object({
+	slug: z.string(),
+	lang: z.enum(['en', 'no']),
+	title: z.string(),
+	description: z.string(),
+	problemTitle: z.string(),
+	problemLead: z.string(),
+	problemItems: z.array(companyProblemItemSchema).min(1),
+	solutionTitle: z.string(),
+	solutionBody: z.string(),
+	productTitle: z.string(),
+	productLead: z.string(),
+	edge: z.string().optional(),
+	applicationsTitle: z.string(),
+	applications: z.array(z.string()).min(1),
+	proofLine: z.string().optional(),
+	infoCta: z.string().optional(),
+	infoHref: z.string().optional(),
+	infoExternal: z.boolean().optional(),
+	portalCta: z.string(),
+	portalHref: z.string(),
+	portalExternal: z.boolean().optional(),
+	contactCta: z.string(),
+	contactHref: z.string(),
+	media: mediaPlaceholderSchema,
+});
+
 const company = defineCollection({
 	loader: glob({
 		pattern: '**/*.md',
@@ -155,12 +170,23 @@ const company = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		description: z.string().optional(),
-		navProducts: z.string(),
+		navDeliver: z.string(),
 		navProjects: z.string(),
 		navAbout: z.string(),
 		navContact: z.string(),
 		navSalmoscan: z.string(),
 		navCta: z.string(),
+		navProductsColumn: z.string(),
+		deliverMarkets: z
+			.array(
+				z.object({
+					title: z.string(),
+					blurb: z.string(),
+					product: z.string(),
+					cta: z.string(),
+				}),
+			)
+			.min(1),
 		hero: z.object({
 			brand: z.string(),
 			title: z.string(),
@@ -182,6 +208,8 @@ const company = defineCollection({
 		aboutTitle: z.string(),
 		aboutLead: z.string(),
 		aboutBody: z.string(),
+		teamTitle: z.string(),
+		teamLead: z.string(),
 		openTitle: z.string(),
 		openLead: z.string(),
 		openItems: z.array(companyOpenItemSchema).min(1),
@@ -194,6 +222,65 @@ const company = defineCollection({
 		footerBrand: z.string(),
 		footerTagline: z.string(),
 		footerCopy: z.string(),
+		footerNav: z
+			.array(
+				z.object({
+					label: z.string(),
+					href: z.string(),
+				}),
+			)
+			.min(1),
+		footerLegal: z
+			.array(
+				z.object({
+					label: z.string(),
+					href: z.string(),
+				}),
+			)
+			.min(1),
+		footerLinkedInUrl: z.string().optional(),
+		footerLinkedInLabel: z.string(),
+	}),
+});
+
+const products = defineCollection({
+	loader: glob({
+		pattern: '**/*.md',
+		base: './src/content/products',
+		generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+	}),
+	schema: productPageSchema,
+});
+
+const legal = defineCollection({
+	loader: glob({
+		pattern: '**/*.md',
+		base: './src/content/legal',
+		generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+	}),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		updated: z.string(),
+		draftNotice: z.string(),
+	}),
+});
+
+const team = defineCollection({
+	loader: glob({
+		pattern: '*.md',
+		base: './src/content/team',
+		generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+	}),
+	schema: z.object({
+		name: z.string(),
+		roleEn: z.string(),
+		roleNo: z.string(),
+		email: z.string().optional(),
+		linkedin: z.string().optional(),
+		photo: z.string(),
+		order: z.number(),
+		active: z.boolean().default(true),
 	}),
 });
 
@@ -201,4 +288,7 @@ export const collections = {
 	pages,
 	history,
 	company,
+	products,
+	legal,
+	team,
 };

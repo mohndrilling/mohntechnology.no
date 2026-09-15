@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+	lang: 'en' | 'no';
+	title: string;
+	lead: string;
+}
+
+const { lang, title, lead } = Astro.props;
+
+const members = (await getCollection('team'))
+	.filter((m) => m.data.active !== false)
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((m) => {
+		const email = m.data.email?.trim() || '';
+		const linkedin = m.data.linkedin?.trim() || '';
+		return {
+			name: m.data.name,
+			role: lang === 'no' ? m.data.roleNo : m.data.roleEn,
+			email,
+			linkedin,
+			photoSrc: `/media/company/team/${m.data.photo}`,
+		};
+	});
+
+const emailLabel = lang === 'no' ? 'Send e-post til' : 'Email';
+const linkedinLabel = 'LinkedIn';
+---
+
+{
+	members.length > 0 && (
+		<div class="team-block">
+			<h3 class="team-heading">{title}</h3>
+			<p class="section-lead team-lead">{lead}</p>
+			<ul class="team-grid">
+				{members.map((member) => (
+					<li class="team-card">
+						<img class="team-photo" src={member.photoSrc} alt="" width="160" height="160" loading="lazy" decoding="async" />
+						<p class="team-name">{member.name}</p>
+						<p class="team-role">{member.role}</p>
+						{(member.email || member.linkedin) && (
+							<div class="team-links">
+								{member.email && (
+									<a class="team-icon-link" href={`mailto:${member.email}`} aria-label={`${emailLabel} ${member.name}`}>
+										<svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
+											<path
+												fill="currentColor"
+												d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"
+											/>
+										</svg>
+									</a>
+								)}
+								{member.linkedin && (
+									<a
+										class="team-icon-link"
+										href={member.linkedin}
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label={`${linkedinLabel}: ${member.name}`}
+									>
+										<svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
+											<path
+												fill="currentColor"
+												d="M6.94 8.5H3.56V20h3.38V8.5ZM5.25 7.05c1.08 0 1.95-.88 1.95-1.95S6.33 3.15 5.25 3.15 3.3 4.03 3.3 5.1s.87 1.95 1.95 1.95ZM20.44 20h-3.37v-5.6c0-1.34-.02-3.06-1.86-3.06-1.87 0-2.15 1.46-2.15 2.96V20h-3.37V8.5h3.24v1.57h.05c.45-.85 1.55-1.75 3.19-1.75 3.41 0 4.04 2.24 4.04 5.16V20Z"
+											/>
+										</svg>
+									</a>
+								)}
+							</div>
+						)}
+					</li>
+				))}
+			</ul>
+		</div>
+	)
+}
+
+<style>
+	.team-block {
+		margin: 2.5rem 0;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-border);
+	}
+	.team-heading {
+		font-family: var(--font-heading);
+		font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+		margin: 0 0 0.35rem;
+	}
+	.team-lead {
+		margin-bottom: 1.5rem;
+	}
+	.team-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+		gap: 1.5rem 1rem;
+		justify-items: center;
+	}
+	.team-card {
+		text-align: center;
+		max-width: 10.5rem;
+	}
+	.team-photo {
+		width: 6.5rem;
+		height: 6.5rem;
+		object-fit: cover;
+		border-radius: 50%;
+		display: block;
+		margin: 0 auto 0.75rem;
+		background: var(--color-surface-elevated);
+		border: 1px solid var(--color-border);
+	}
+	.team-name {
+		margin: 0 0 0.2rem;
+		font-family: var(--font-heading);
+		font-size: 0.92rem;
+		font-weight: 650;
+		line-height: 1.25;
+	}
+	.team-role {
+		margin: 0;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-text-muted);
+		line-height: 1.35;
+	}
+	.team-links {
+		display: flex;
+		justify-content: center;
+		gap: 0.45rem;
+		margin-top: 0.55rem;
+	}
+	.team-icon-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.7rem;
+		height: 1.7rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-border);
+		color: var(--color-text-muted);
+		text-decoration: none;
+	}
+	.team-icon-link:hover {
+		color: var(--color-accent);
+		border-color: var(--color-accent);
+	}
+</style>

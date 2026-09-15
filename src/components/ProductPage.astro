@@ -1,0 +1,236 @@
+---
+import CompanyLayout from '../layouts/CompanyLayout.astro';
+import MediaPlaceholder from './MediaPlaceholder.astro';
+
+type Media = {
+	kind?: 'image' | 'video';
+	src?: string;
+	label: string;
+	need: string;
+	message: string;
+};
+
+type ProblemItem = { title: string; body: string };
+
+interface Props {
+	lang: 'en' | 'no';
+	alternateLangHref: string;
+	data: {
+		title: string;
+		description: string;
+		problemTitle: string;
+		problemLead: string;
+		problemItems: ProblemItem[];
+		solutionTitle: string;
+		solutionBody: string;
+		productTitle: string;
+		productLead: string;
+		edge?: string;
+		applicationsTitle: string;
+		applications: string[];
+		proofLine?: string;
+		infoCta?: string;
+		infoHref?: string;
+		infoExternal?: boolean;
+		portalCta: string;
+		portalHref: string;
+		portalExternal?: boolean;
+		contactCta: string;
+		contactHref: string;
+		media: Media;
+	};
+}
+
+const { lang, alternateLangHref, data } = Astro.props;
+const homePath = lang === 'no' ? '/no/' : '/';
+const backLabel = lang === 'no' ? 'Tilbake til forsiden' : 'Back to home';
+const portalIsContact = data.portalHref.includes('#contact');
+---
+
+<CompanyLayout
+	title={`${data.title} – Mohn Technology`}
+	description={data.description}
+	lang={lang}
+	alternateLangHref={alternateLangHref}
+>
+	<article class="container product-page">
+		<p class="product-page-back">
+			<a href={homePath}>{backLabel}</a>
+		</p>
+		<h1 class="section-title">{data.title}</h1>
+		<p class="section-lead">{data.description}</p>
+
+		<section class="product-page-section">
+			<h2>{data.problemTitle}</h2>
+			<p class="section-lead">{data.problemLead}</p>
+			<div class="problem-grid">
+				{data.problemItems.map((item) => (
+					<article class="problem-item">
+						<h3>{item.title}</h3>
+						<p>{item.body}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="product-page-section">
+			<h2>{data.solutionTitle}</h2>
+			<p class="product-page-body">{data.solutionBody}</p>
+		</section>
+
+		<section class="product-page-section">
+			<h2>{data.productTitle}</h2>
+			<p class="section-lead">{data.productLead}</p>
+			<div class="product-detail">
+				<div class="product-detail-media">
+					<MediaPlaceholder
+						label={data.media.label}
+						need={data.media.need}
+						message={data.media.message}
+						src={data.media.src}
+						kind={data.media.kind}
+						aspect="product"
+					/>
+				</div>
+				<div class="product-detail-body">
+					{data.edge && <p class="product-edge">{data.edge}</p>}
+					<div class="product-applications">
+						<h3 class="product-applications-title">{data.applicationsTitle}</h3>
+						<ul class="product-applications-list">
+							{data.applications.map((app) => (
+								<li>{app}</li>
+							))}
+						</ul>
+					</div>
+					{data.proofLine && <p class="product-proof">{data.proofLine}</p>}
+					<div class="product-actions">
+						{
+							data.infoCta && data.infoHref && (
+								<a
+									href={data.infoHref}
+									class="btn btn-ghost"
+									target={data.infoExternal ? '_blank' : undefined}
+									rel={data.infoExternal ? 'noopener' : undefined}
+								>
+									{data.infoCta}
+								</a>
+							)
+						}
+						<a
+							href={data.portalHref}
+							class="btn btn-primary"
+							target={data.portalExternal ? '_blank' : undefined}
+							rel={data.portalExternal ? 'noopener' : undefined}
+						>
+							{data.portalCta}
+						</a>
+						{
+							!portalIsContact && (
+								<a href={data.contactHref} class="btn btn-ghost">
+									{data.contactCta}
+								</a>
+							)
+						}
+					</div>
+				</div>
+			</div>
+		</section>
+	</article>
+</CompanyLayout>
+
+<style>
+	.product-page {
+		padding: 2rem 0 1rem;
+	}
+	.product-page-back {
+		margin: 0 0 1.25rem;
+	}
+	.product-page-back a {
+		color: var(--color-text-muted);
+		font-size: 0.92rem;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.product-page-back a:hover {
+		color: var(--color-accent);
+	}
+	.product-page-section {
+		margin: 2.5rem 0;
+	}
+	.product-page-section h2 {
+		font-family: var(--font-heading);
+		font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+		margin: 0 0 0.5rem;
+	}
+	.product-page-body {
+		max-width: 42rem;
+		color: var(--color-text-muted);
+		line-height: 1.6;
+		margin: 0;
+		font-size: 1.05rem;
+	}
+	.problem-grid {
+		display: grid;
+		gap: 1.25rem;
+	}
+	@media (min-width: 800px) {
+		.problem-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+	.problem-item {
+		border-top: 2px solid var(--color-accent);
+		padding-top: 0.9rem;
+	}
+	.problem-item h3 {
+		font-family: var(--font-heading);
+		font-size: 1.05rem;
+		margin: 0 0 0.4rem;
+	}
+	.problem-item p {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+	}
+	.product-detail {
+		display: grid;
+		gap: 1.5rem;
+	}
+	@media (min-width: 880px) {
+		.product-detail {
+			grid-template-columns: 1.05fr 1fr;
+			align-items: start;
+		}
+	}
+	.product-edge {
+		font-weight: 600;
+		margin: 0 0 0.85rem;
+	}
+	.product-applications-title {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		margin: 0 0 0.45rem;
+		color: var(--color-text-muted);
+	}
+	.product-applications-list {
+		margin: 0 0 1rem;
+		padding-left: 1.1rem;
+		color: var(--color-text-muted);
+	}
+	.product-applications-list li {
+		margin-bottom: 0.25rem;
+	}
+	.product-proof {
+		font-size: 0.92rem;
+		border-left: 2px solid var(--color-accent);
+		padding-left: 0.75rem;
+		margin: 0 0 1rem;
+		color: var(--color-text-muted);
+	}
+	.product-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+	}
+</style>
