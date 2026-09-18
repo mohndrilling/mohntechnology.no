@@ -5,8 +5,6 @@ description: From a real need in wellboat operations to lab work, field data, an
 
 # The Salmoscan story
 
-This page is about **why** and **how** Salmoscan came to be — market need, technical challenges, partnerships, and R&D. **Measured results, key figures, and operational value** are all on the homepage under [Product](/#product).
-
 ## Background
 
 Salmoscan was born from a pressing need for better knowledge and accurate analysis of farmed fish on wellboats. Current solutions are widely seen as not accurate enough. Most machine vision systems focus on weight and fish count, with accuracy often quoted at a few percent under “optimal” conditions. The catch is that those optimal conditions rarely match what happens in real operations.
@@ -27,5 +25,4 @@ In R&D it is important to test and rule in or out as many candidate solutions as
 
 ## Read next
 
-- [Back to the homepage](/) — hero, features, and contact  
-- [Product — results and specifications](/#product) — numbers, specs, and operational value
+- [Salmoscan product page](/products/salmoscan/)

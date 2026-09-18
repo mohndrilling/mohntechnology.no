@@ -37,10 +37,10 @@
       }
     }
   },
-  "forwardPorts": [5173, 8080],
+  "forwardPorts": [4321, 8080],
   "portsAttributes": {
-    "5173": {
-      "label": "Vue dev server",
+    "4321": {
+      "label": "Astro dev server",
       "onAutoForward": "notify"
     },
     "8080": {

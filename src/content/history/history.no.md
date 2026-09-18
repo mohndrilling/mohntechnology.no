@@ -5,8 +5,6 @@ description: Fra behov i brønnbåtdrift til lab, felt og robuste KI-modeller �
 
 # Historien om Salmoscan
 
-Denne siden handler om **hvorfor** og **hvordan** Salmoscan ble til — markedets behov, tekniske utfordringer, samarbeid og FoU. **Målte resultater, nøkkeltall og bruksverdi** ligger samlet under [Produkt på forsiden](/no/#product).
-
 ## Bakgrunn
 
 Salmoscan er et produkt skapt av et skrikende behov for mer kunnskap og nøyaktige analyser av oppdrettsfisk i brønnbåter. Det er et kjent problem at dagens løsninger ikke har tilstrekkelig nøyaktighet. Dagens maskinsynsystemer fokuserer i hovedsak på vekt og antall fisk, og nøyaktigheten er ofte oppgitt til et par prosent under optimale forhold. Problemet er at forholdene produsentene oppgir som optimale, sjelden samsvarer med det som skjer i reell drift.
@@ -27,5 +25,4 @@ Når man driver med FoU-arbeid, er det viktig å teste og avklare så mange pote
 
 ## Videre lesning
 
-- [Tilbake til forsiden](/no/) — hero, funksjoner og kontakt  
-- [Produkt — resultater og spesifikasjoner](/no/#product) — tall, nøkkeltall og operasjonell verdi
+- [Salmoscan produktside](/no/produkter/salmoscan/)

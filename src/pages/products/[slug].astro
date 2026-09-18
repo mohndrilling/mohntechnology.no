@@ -14,4 +14,4 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const alternateLangHref = productPath('no', entry.data.slug);
 ---
-<ProductPage lang="en" alternateLangHref={alternateLangHref} data={entry.data} />
+<ProductPage lang="en" alternateLangHref={alternateLangHref} entry={entry} />

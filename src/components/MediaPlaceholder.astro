@@ -1,37 +1,58 @@
 ---
 interface Props {
 	label: string;
-	need: string;
-	message: string;
+	need?: string;
+	message?: string;
 	/** Optional path once the real file exists, e.g. /media/company/hero/operations.mp4 */
 	src?: string;
 	kind?: 'image' | 'video';
 	aspect?: 'hero' | 'product' | 'story';
+	/** Full-bleed, no card chrome */
+	bleed?: boolean;
+	/** Autoplay muted loop (hero atmosphere) */
+	ambient?: boolean;
 }
 
-const { label, need, message, src, kind = 'image', aspect = 'product' } = Astro.props;
+const {
+	label,
+	need = '',
+	message = '',
+	src,
+	kind = 'image',
+	aspect = 'product',
+	bleed = false,
+	ambient = false,
+} = Astro.props;
 const isVideo = kind === 'video' || (src && /\.(mp4|webm|mov)$/i.test(src));
+const aria = [label, need, message].filter(Boolean).join('. ');
 ---
 
-<figure class:list={['media-ph', `media-ph--${aspect}`]} data-media-placeholder>
+<figure
+	class:list={['media-ph', `media-ph--${aspect}`, bleed && 'media-ph--bleed']}
+	data-media-placeholder
+>
 	{
 		src && !isVideo ? (
-			<img src={src} alt={label} class="media-ph-file" width="1200" height="750" />
+			<img src={src} alt={label} class="media-ph-file" width="1600" height="900" loading={aspect === 'hero' ? 'eager' : 'lazy'} decoding="async" />
 		) : src && isVideo ? (
-			<video class="media-ph-file" controls playsinline preload="metadata" src={src}>
-				<a href={src}>{label}</a>
-			</video>
+			ambient ? (
+				<video
+					class="media-ph-file"
+					autoplay
+					muted
+					loop
+					playsinline
+					preload="metadata"
+					src={src}
+					aria-label={label}
+				/>
+			) : (
+				<video class="media-ph-file" controls playsinline preload="metadata" src={src}>
+					<a href={src}>{label}</a>
+				</video>
+			)
 		) : (
-			<div class="media-ph-empty" role="img" aria-label={`${label}. ${need}`}>
-				<p class="media-ph-kicker">{kind === 'video' ? 'Video needed' : 'Image needed'}</p>
-				<p class="media-ph-label">{label}</p>
-				<p class="media-ph-need">
-					<strong>Shoot / supply:</strong> {need}
-				</p>
-				<p class="media-ph-message">
-					<strong>Message:</strong> {message}
-				</p>
-			</div>
+			<div class="media-ph-empty" role="img" aria-label={aria || label} />
 		)
 	}
 </figure>
@@ -39,14 +60,25 @@ const isVideo = kind === 'video' || (src && /\.(mp4|webm|mov)$/i.test(src));
 <style>
 	.media-ph {
 		margin: 0;
-		border-radius: var(--radius-lg);
 		overflow: hidden;
+		border-radius: var(--radius-lg);
 		border: 1px solid var(--color-border);
 		background: var(--color-surface);
 	}
+	.media-ph--bleed {
+		border-radius: 0;
+		border: none;
+		background: #050b10;
+	}
 	.media-ph--hero {
-		aspect-ratio: 21 / 9;
-		min-height: 220px;
+		aspect-ratio: 16 / 9;
+		min-height: clamp(18rem, 56vh, 42rem);
+	}
+	.media-ph--bleed.media-ph--hero {
+		aspect-ratio: auto;
+		/* Parent hero shell owns the height; fill it edge-to-edge */
+		min-height: 100%;
+		height: 100%;
 	}
 	.media-ph--product {
 		aspect-ratio: 16 / 10;
@@ -63,48 +95,8 @@ const isVideo = kind === 'video' || (src && /\.(mp4|webm|mov)$/i.test(src));
 	.media-ph-empty {
 		height: 100%;
 		min-height: inherit;
-		padding: 1.25rem 1.35rem;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
-		gap: 0.45rem;
 		background:
-			linear-gradient(160deg, var(--color-surface-elevated) 0%, var(--color-surface) 55%, #0a1820 100%),
-			repeating-linear-gradient(
-				-12deg,
-				transparent,
-				transparent 10px,
-				rgba(46, 184, 166, 0.04) 10px,
-				rgba(46, 184, 166, 0.04) 11px
-			);
-	}
-	.media-ph-kicker {
-		margin: 0;
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--color-accent);
-	}
-	.media-ph-label {
-		margin: 0;
-		font-family: var(--font-heading);
-		font-size: 1.15rem;
-		font-weight: 700;
-		letter-spacing: -0.02em;
-		color: var(--color-text);
-	}
-	.media-ph-need,
-	.media-ph-message {
-		margin: 0;
-		font-size: 0.88rem;
-		line-height: 1.45;
-		color: var(--color-text-muted);
-		max-width: 40rem;
-	}
-	.media-ph-need strong,
-	.media-ph-message strong {
-		color: var(--color-text);
-		font-weight: 600;
+			radial-gradient(ellipse 80% 60% at 70% 40%, rgba(46, 184, 166, 0.12), transparent 55%),
+			linear-gradient(165deg, #0c1822 0%, #071018 48%, #050b10 100%);
 	}
 </style>

@@ -1,7 +1,7 @@
 ---
 name: Stein Mohn
-roleEn: Chairman of the Board
-roleNo: Styreleder
+roleEn: Founder / Chairman
+roleNo: Grunnlegger / styreleder
 email: ""
 linkedin: ""
 photo: stein-mohn.jpg

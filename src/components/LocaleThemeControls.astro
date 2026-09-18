@@ -5,8 +5,10 @@ interface Props {
 	linkToEn?: string;
 	/** Target URL for the Norwegian version of the current page (default `/no/`) */
 	linkToNo?: string;
+	/** Marketing surfaces commit to one designed theme — hide the toggle. */
+	showTheme?: boolean;
 }
-const { locale, linkToEn = '/', linkToNo = '/no/' } = Astro.props;
+const { locale, linkToEn = '/', linkToNo = '/no/', showTheme = true } = Astro.props;
 const enIsLink = locale === 'no';
 const noIsLink = locale === 'en';
 ---
@@ -24,10 +26,14 @@ const noIsLink = locale === 'en';
 			<span class="locale-link active" aria-current="true">Norsk</span>
 		)}
 	</div>
-	<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
-		<span class="theme-icon dark-icon" aria-hidden="true">☀</span>
-		<span class="theme-icon light-icon" aria-hidden="true">☾</span>
-	</button>
+	{
+		showTheme && (
+			<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+				<span class="theme-icon dark-icon" aria-hidden="true">☀</span>
+				<span class="theme-icon light-icon" aria-hidden="true">☾</span>
+			</button>
+		)
+	}
 </div>
 
 <style>

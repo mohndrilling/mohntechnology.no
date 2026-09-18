@@ -24,6 +24,9 @@ type DeliverMarket = {
 	blurb: string;
 	product: string;
 	cta: string;
+	image?: string;
+	imageAlt?: string;
+	video?: string;
 };
 
 type Proof = { value: string; label: string };
@@ -106,7 +109,6 @@ const {
 	productsTitle,
 	productsLead,
 	products,
-	proof,
 	projectsTitle,
 	projectsLead,
 	projects,
@@ -129,7 +131,7 @@ const {
 
 const uid = `mt-${lang}`;
 const mainTabs = [
-	{ id: 'deliver', label: navDeliver, mega: true },
+	{ id: 'deliver', label: navDeliver },
 	{ id: 'work', label: navProjects },
 	{ id: 'about', label: navAbout },
 	{ id: 'contact', label: navContact },
@@ -140,7 +142,6 @@ const problemLabel = lang === 'no' ? 'Behov' : 'Need';
 const resultLabel = lang === 'no' ? 'Leveranse' : 'Delivered';
 const mainTabsLabel = lang === 'no' ? 'Hovedmeny' : 'Main navigation';
 const menuLabel = lang === 'no' ? 'Meny' : 'Menu';
-const overviewLabel = lang === 'no' ? 'Oversikt' : 'Overview';
 const linkToEn = '/';
 const linkToNo = '/no/';
 
@@ -153,109 +154,58 @@ const productsWithHref = products.map((product) => ({
 	href: productPath(lang, product.slug),
 }));
 
-const interestForOpen = openItems.map((_, i) => {
-	const careers = lang === 'no' ? 'Jobb / samarbeid' : 'Careers / work with us';
-	const vision = lang === 'no' ? 'Skreddersydd maskinsynløsning' : 'Custom vision problem';
-	return i === 0 ? careers : vision;
-});
+const careersInterest = lang === 'no' ? 'Jobb / samarbeid' : 'Careers / work with us';
+const visionInterest = lang === 'no' ? 'Skreddersydd maskinsynløsning' : 'Custom vision problem';
+const openItemsWithInterest = openItems.map((item, index) => ({
+	...item,
+	interest: index === 0 ? careersInterest : visionInterest,
+}));
 ---
 
 <div class="mt-shell" data-mt-shell data-uid={uid}>
 	<header class="mt-header" data-header>
 		<div class="container mt-header-inner">
-			<a href={homePath} class="mt-logo" data-switch-main="deliver" aria-label={hero.brand}>
+			<a href={homePath} class="mt-logo" data-switch-main="home" aria-label={hero.brand}>
 				<img
 					src="/media/company/brand/mohn-technology-logo.png"
 					alt={hero.brand}
-					width="180"
-					height="125"
+					width="963"
+					height="670"
 					decoding="async"
+					fetchpriority="high"
 				/>
 			</a>
 
 			<nav class="mt-nav" aria-label={mainTabsLabel}>
 				<div class="mt-tablist" role="tablist" aria-label={mainTabsLabel}>
+					<button
+						type="button"
+						class="mt-nav-link"
+						data-switch-main="home"
+					>
+						{lang === 'no' ? 'Hjem' : 'Home'}
+					</button>
 					{
-						mainTabs.map((tab, i) =>
-							tab.mega ? (
-								<div class="mt-mega-wrap" data-mega-wrap>
-									<button
-										type="button"
-										class:list={['mt-nav-link', 'mt-mega-trigger', { 'is-active': i === 0 }]}
-										role="tab"
-										id={`${uid}-main-tab-${tab.id}`}
-										aria-selected={i === 0 ? 'true' : 'false'}
-										aria-controls={`${uid}-main-panel-${tab.id}`}
-										aria-expanded="false"
-										aria-haspopup="true"
-										tabindex={i === 0 ? 0 : -1}
-										data-main-tab={tab.id}
-										data-mega-trigger
-									>
-										{tab.label}
-										<span class="mt-mega-chevron" aria-hidden="true" />
-									</button>
-									<div
-										class="mt-mega"
-										id={`${uid}-mega`}
-										data-mega
-										hidden
-										role="region"
-										aria-label={navDeliver}
-									>
-										<div class="mt-mega-inner">
-											<div class="mt-mega-col">
-												<p class="mt-mega-heading">{marketsLabel}</p>
-												<ul class="mt-mega-list">
-													{marketsWithHref.map((market) => (
-														<li>
-															<a class="mt-mega-item" href={market.href}>
-																<span class="mt-mega-item-title">{market.title}</span>
-																<span class="mt-mega-item-blurb">{market.blurb}</span>
-															</a>
-														</li>
-													))}
-												</ul>
-											</div>
-											<div class="mt-mega-col mt-mega-col-products">
-												<p class="mt-mega-heading">{navProductsColumn}</p>
-												<ul class="mt-mega-list">
-													{productsWithHref.map((product) => (
-														<li>
-															<a class="mt-mega-item mt-mega-item-product" href={product.href}>
-																<span class="mt-mega-item-title">{product.title}</span>
-															</a>
-														</li>
-													))}
-												</ul>
-												<button type="button" class="mt-mega-overview" data-switch-main="deliver">
-													{overviewLabel}
-												</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							) : (
-								<button
-									type="button"
-									class:list={['mt-nav-link', { 'is-active': i === 0 }]}
-									role="tab"
-									id={`${uid}-main-tab-${tab.id}`}
-									aria-selected={i === 0 ? 'true' : 'false'}
-									aria-controls={`${uid}-main-panel-${tab.id}`}
-									tabindex={i === 0 ? 0 : -1}
-									data-main-tab={tab.id}
-								>
-									{tab.label}
-								</button>
-							),
-						)
+						mainTabs.map((tab) => (
+							<button
+								type="button"
+								class="mt-nav-link"
+								role="tab"
+								id={`${uid}-main-tab-${tab.id}`}
+								aria-selected="false"
+								aria-controls={`${uid}-main-panel-${tab.id}`}
+								tabindex={-1}
+								data-main-tab={tab.id}
+							>
+								{tab.label}
+							</button>
+						))
 					}
 				</div>
 			</nav>
 
 			<div class="mt-header-tools">
-				<LocaleThemeControls locale={lang} linkToEn={linkToEn} linkToNo={linkToNo} />
+				<LocaleThemeControls locale={lang} linkToEn={linkToEn} linkToNo={linkToNo} showTheme={false} />
 				<button type="button" class="mt-menu-toggle" data-menu-toggle aria-expanded="false" aria-controls={`${uid}-mobile-nav`}>
 					{menuLabel}
 				</button>
@@ -263,12 +213,10 @@ const interestForOpen = openItems.map((_, i) => {
 		</div>
 
 		<div class="mt-mobile-nav container" id={`${uid}-mobile-nav`} data-mobile-nav hidden>
-			<button
-				type="button"
-				class="mt-mobile-link is-active"
-				data-main-tab="deliver"
-				data-mobile-tab
-			>
+			<button type="button" class="mt-mobile-link" data-switch-main="home">
+				{lang === 'no' ? 'Hjem' : 'Home'}
+			</button>
+			<button type="button" class="mt-mobile-link" data-main-tab="deliver" data-mobile-tab>
 				{navDeliver}
 			</button>
 			<p class="mt-mobile-group">{marketsLabel}</p>
@@ -300,8 +248,12 @@ const interestForOpen = openItems.map((_, i) => {
 	</header>
 
 	<main>
-		<section class="mt-intro container" aria-label={lang === 'no' ? 'Introduksjon' : 'Introduction'} data-intro>
-			<div class="mt-intro-media">
+		<section
+			class="mt-home"
+			aria-label={lang === 'no' ? 'Hjem' : 'Home'}
+			data-home-landing
+		>
+			<div class="mt-home-visual">
 				<MediaPlaceholder
 					label={hero.media.label}
 					need={hero.media.need}
@@ -309,66 +261,74 @@ const interestForOpen = openItems.map((_, i) => {
 					src={hero.media.src}
 					kind={hero.media.kind}
 					aspect="hero"
+					bleed
+					ambient
 				/>
+				<div class="mt-home-veil" aria-hidden="true" />
+				<div class="mt-home-copy">
+					<p class="mt-home-brand">{hero.brand}</p>
+					<h1 class="mt-home-title">{hero.title}</h1>
+					<p class="mt-home-lead">{hero.lead}</p>
+					<button type="button" class="btn btn-primary mt-home-cta" data-switch-main="deliver">
+						{hero.ctaPrimary}
+					</button>
+				</div>
 			</div>
 		</section>
 
-		<div class="mt-panels container">
+		<div class="mt-panels container" hidden>
 			<section
-				class="mt-panel is-active"
+				class="mt-panel"
 				role="tabpanel"
 				id={`${uid}-main-panel-deliver`}
 				aria-labelledby={`${uid}-main-tab-deliver`}
 				data-main-panel="deliver"
+				hidden
 				tabindex="0"
 			>
-				<h2 class="section-title problem-headline">{problemTitle}</h2>
-				<p class="section-lead">{problemLead}</p>
-				<div class="problem-grid">
-					{problemItems.map((item) => (
-						<article class="problem-item">
-							<h3>{item.title}</h3>
-							<p>{item.body}</p>
-						</article>
+				<h2 class="section-title">{navDeliver}</h2>
+				<p class="section-lead markets-lead">
+					{lang === 'no'
+						? 'Vi leverer skreddersydde maskinsynsystemer for automatisk vurdering av fiskehelse som tåler marine miljø. Vi utvikler og bygger alle våre produkter i Norge.'
+						: 'We deliver tailored machine vision systems for automatic fish-health assessment, built for marine environments. We develop and build all our products in Norway.'}
+				</p>
+				<div class="markets-grid">
+					{marketsWithHref.map((market) => (
+						<a class="market-card" href={market.href}>
+							<span class="market-card-product">{market.product}</span>
+							<span class="market-card-sector">{market.title}</span>
+							<span class="market-card-blurb">{market.blurb}</span>
+							<span class="market-card-cta">
+								{lang === 'no' ? 'Les mer' : 'Learn more'}
+								<span aria-hidden="true"> →</span>
+							</span>
+							{(market.video || market.image) && (
+								<span class="market-card-media">
+									{market.video ? (
+										<video
+											src={market.video}
+											poster={market.image}
+											autoplay
+											muted
+											loop
+											playsinline
+											preload="metadata"
+											aria-label={market.imageAlt || market.product}
+										/>
+									) : (
+										<img
+											src={market.image}
+											alt={market.imageAlt || market.product}
+											width="640"
+											height="400"
+											loading="lazy"
+											decoding="async"
+										/>
+									)}
+								</span>
+							)}
+						</a>
 					))}
-				</div>
-
-				<div class="markets-block">
-					<h3 class="markets-heading">{marketsLabel}</h3>
-					<p class="section-lead markets-lead">
-						{lang === 'no'
-							? 'Start med operasjonen du kjører — så produktlinjen som passer.'
-							: 'Start with the operation you run — then the product line that fits.'}
-					</p>
-					<div class="markets-grid">
-						{marketsWithHref.map((market) => (
-							<a class="market-card" href={market.href}>
-								<span class="market-card-title">{market.title}</span>
-								<span class="market-card-blurb">{market.blurb}</span>
-								<span class="market-card-cta">
-									{market.cta}
-									<span aria-hidden="true"> →</span>
-								</span>
-							</a>
-						))}
-					</div>
-				</div>
-
-				<div class="products-block" id={`${uid}-products`}>
-					<h3 class="products-heading">{productsTitle}</h3>
-					<p class="section-lead products-lead">{productsLead}</p>
-					<div class="product-link-grid">
-						{productsWithHref.map((product) => (
-							<a class="product-link-card" href={product.href}>
-								<span class="product-link-title">{product.title}</span>
-								<span class="product-link-blurb">{product.blurb}</span>
-								<span class="product-link-cta">
-									{lang === 'no' ? 'Åpne produktside' : 'Open product page'}
-									<span aria-hidden="true"> →</span>
-								</span>
-							</a>
-						))}
-					</div>
 				</div>
 			</section>
 
@@ -424,14 +384,6 @@ const interestForOpen = openItems.map((_, i) => {
 				<h2 class="section-title">{aboutTitle}</h2>
 				<p class="section-lead">{aboutLead}</p>
 				<p class="about-body">{aboutBody}</p>
-				<div class="proof-strip">
-					{proof.map((item) => (
-						<div class="proof-item">
-							<p class="proof-value">{item.value}</p>
-							<p class="proof-label">{item.label}</p>
-						</div>
-					))}
-				</div>
 
 				<TeamGrid lang={lang} title={teamTitle} lead={teamLead} />
 
@@ -439,11 +391,11 @@ const interestForOpen = openItems.map((_, i) => {
 					<h3 class="open-heading">{openTitle}</h3>
 					<p class="section-lead">{openLead}</p>
 					<div class="open-grid">
-						{openItems.map((item, i) => (
+						{openItemsWithInterest.map((item) => (
 							<article class="open-item">
 								<h4>{item.title}</h4>
 								<p>{item.body}</p>
-								<button type="button" class="btn btn-ghost" data-switch-main="contact" data-interest={interestForOpen[i]}>
+								<button type="button" class="btn btn-ghost" data-switch-main="contact" data-interest={item.interest}>
 									{item.cta}
 								</button>
 							</article>
@@ -516,8 +468,9 @@ const interestForOpen = openItems.map((_, i) => {
 	}
 	.mt-logo img {
 		display: block;
-		height: clamp(2.35rem, 4.2vw, 2.85rem);
+		height: clamp(3.1rem, 5.5vw, 3.75rem);
 		width: auto;
+		image-rendering: -webkit-optimize-contrast;
 	}
 	.mt-logo:hover {
 		opacity: 0.88;
@@ -566,7 +519,7 @@ const interestForOpen = openItems.map((_, i) => {
 		color: var(--color-text);
 		font-weight: 600;
 	}
-	.mt-nav-link.is-active::after {
+	.mt-nav-link::after {
 		content: '';
 		position: absolute;
 		left: 0.75rem;
@@ -575,110 +528,11 @@ const interestForOpen = openItems.map((_, i) => {
 		height: 2px;
 		background: var(--color-accent);
 		border-radius: 1px;
+		transform: scaleX(0);
+		transition: transform 0.25s ease;
 	}
-
-	.mt-mega-wrap {
-		position: relative;
-	}
-	.mt-mega-trigger {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-	}
-	.mt-mega-chevron {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-right: 1.5px solid currentColor;
-		border-bottom: 1.5px solid currentColor;
-		transform: rotate(45deg) translateY(-1px);
-		opacity: 0.7;
-		transition: transform 0.15s ease;
-	}
-	.mt-mega-trigger[aria-expanded='true'] .mt-mega-chevron {
-		transform: rotate(225deg) translateY(-1px);
-	}
-	.mt-mega {
-		position: absolute;
-		top: calc(100% + 0.55rem);
-		left: 50%;
-		transform: translateX(-40%);
-		width: min(42rem, calc(100vw - 2rem));
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		box-shadow: 0 18px 40px color-mix(in srgb, var(--color-text) 12%, transparent);
-		padding: 1.15rem 1.25rem 1.25rem;
-		z-index: 120;
-	}
-	.mt-mega[hidden] {
-		display: none;
-	}
-	.mt-mega-inner {
-		display: grid;
-		grid-template-columns: 1.4fr 0.9fr;
-		gap: 1.5rem;
-	}
-	.mt-mega-heading {
-		margin: 0 0 0.65rem;
-		font-size: 0.72rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
-	}
-	.mt-mega-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		gap: 0.35rem;
-	}
-	.mt-mega-item {
-		appearance: none;
-		width: 100%;
-		border: none;
-		background: transparent;
-		text-align: left;
-		padding: 0.55rem 0.6rem;
-		cursor: pointer;
-		font-family: var(--font-body);
-		color: var(--color-text);
-		border-radius: var(--radius);
-		text-decoration: none;
-		display: block;
-	}
-	.mt-mega-item:hover {
-		background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-		text-decoration: none;
-		color: var(--color-text);
-	}
-	.mt-mega-item-title {
-		display: block;
-		font-weight: 650;
-		font-size: 0.95rem;
-	}
-	.mt-mega-item-blurb {
-		display: block;
-		margin-top: 0.2rem;
-		font-size: 0.82rem;
-		line-height: 1.4;
-		color: var(--color-text-muted);
-	}
-	.mt-mega-item-product .mt-mega-item-title {
-		font-size: 1rem;
-	}
-	.mt-mega-overview {
-		appearance: none;
-		border: none;
-		background: none;
-		margin-top: 0.85rem;
-		padding: 0;
-		font-family: var(--font-body);
-		font-size: 0.88rem;
-		font-weight: 600;
-		color: var(--color-accent);
-		cursor: pointer;
-		text-decoration: underline;
-		text-underline-offset: 0.15em;
+	.mt-nav-link.is-active::after {
+		transform: scaleX(1);
 	}
 
 	.mt-header-tools {
@@ -739,19 +593,90 @@ const interestForOpen = openItems.map((_, i) => {
 		font-weight: 600;
 	}
 
-	.mt-intro {
-		padding: 1.5rem 0 0.25rem;
-		max-width: 52rem;
+	.mt-home {
+		padding: 0;
 	}
-	.mt-intro-media {
+	.mt-home[hidden] {
+		display: none;
+	}
+	.mt-home-visual {
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		min-height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
+		height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
+	}
+	.mt-home-visual :global(.media-ph--bleed.media-ph--hero) {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+		min-height: 100%;
+	}
+	.mt-home-veil {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 1;
+		background: linear-gradient(
+			180deg,
+			rgba(7, 16, 24, 0.2) 0%,
+			rgba(7, 16, 24, 0.35) 40%,
+			rgba(7, 16, 24, 0.82) 78%,
+			rgba(7, 16, 24, 0.94) 100%
+		);
+	}
+	.mt-home-copy {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: clamp(2.5rem, 10vh, 5.5rem);
+		z-index: 2;
+		width: var(--container);
+		max-width: 100%;
+		margin-inline: auto;
+		padding-inline: clamp(1rem, 4vw, 3rem);
+		animation: mt-home-in 0.7s ease both;
+	}
+	.mt-home-brand {
+		margin: 0 0 0.55rem;
+		font-family: var(--font-heading);
+		font-size: clamp(1.2rem, 2.6vw, 1.55rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		color: var(--color-text);
+	}
+	.mt-home-title {
+		font-family: var(--font-heading);
+		font-weight: 650;
+		font-size: clamp(1.75rem, 4.2vw, 2.85rem);
+		line-height: 1.14;
+		letter-spacing: -0.03em;
+		margin: 0 0 0.75rem;
+	}
+	.mt-home-lead {
+		margin: 0 0 1.35rem;
+		color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted));
+		font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+		line-height: 1.55;
+		max-width: min(38rem, 92%);
+	}
+	.mt-home-cta {
 		margin-bottom: 0;
 	}
-	.mt-intro.is-collapsed {
-		display: none;
+	@keyframes mt-home-in {
+		from {
+			opacity: 0;
+			transform: translateY(0.6rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.mt-panels {
 		padding: 1.75rem 0 3.5rem;
+		animation: mt-home-in 0.45s ease both;
 	}
 	.mt-panel[hidden] {
 		display: none;
@@ -830,21 +755,49 @@ const interestForOpen = openItems.map((_, i) => {
 		text-decoration: none;
 		color: var(--color-text);
 	}
-	.market-card-title {
+	.market-card-product {
 		font-family: var(--font-heading);
-		font-size: 1.08rem;
-		font-weight: 650;
+		font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.15;
 	}
-	.market-card-blurb {
-		font-size: 0.92rem;
-		line-height: 1.45;
+	.market-card-sector {
+		font-size: 0.82rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
 		color: var(--color-text-muted);
 	}
+	.market-card-blurb {
+		color: var(--color-text-muted);
+		font-size: 0.95rem;
+		line-height: 1.45;
+	}
 	.market-card-cta {
-		font-size: 0.88rem;
-		font-weight: 600;
 		color: var(--color-accent);
-		margin-top: 0.2rem;
+		font-weight: 600;
+		font-size: 0.92rem;
+	}
+	.market-card-media {
+		display: block;
+		margin-top: 0.35rem;
+		overflow: hidden;
+		border-radius: var(--radius);
+		aspect-ratio: 16 / 10;
+		background: var(--color-surface);
+	}
+	.market-card-media img,
+	.market-card-media video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.35s ease;
+	}
+	.market-card:hover .market-card-media img,
+	.market-card:hover .market-card-media video {
+		transform: scale(1.03);
 	}
 
 	.products-block {
@@ -934,31 +887,6 @@ const interestForOpen = openItems.map((_, i) => {
 		line-height: 1.6;
 		margin: 0 0 1.75rem;
 	}
-	.proof-strip {
-		display: grid;
-		gap: 1rem;
-		margin-bottom: 2.5rem;
-	}
-	@media (min-width: 720px) {
-		.proof-strip {
-			grid-template-columns: repeat(3, 1fr);
-		}
-	}
-	.proof-item {
-		border-top: 2px solid var(--color-accent);
-		padding-top: 0.75rem;
-	}
-	.proof-value {
-		font-family: var(--font-heading);
-		font-size: 1.4rem;
-		font-weight: 700;
-		margin: 0 0 0.25rem;
-	}
-	.proof-label {
-		margin: 0;
-		color: var(--color-text-muted);
-		font-size: 0.9rem;
-	}
 
 	.open-block {
 		padding-top: 1.5rem;
@@ -1026,11 +954,10 @@ const interestForOpen = openItems.map((_, i) => {
 		const mobileTabs = [...shell.querySelectorAll('[data-mobile-tab]')];
 		const allMainTriggers = [...shell.querySelectorAll('[data-main-tab]')];
 		const mainPanels = [...shell.querySelectorAll('[data-main-panel]')];
-		const intro = shell.querySelector('[data-intro]');
+		const homeLanding = shell.querySelector('[data-home-landing]');
+		const panelsRoot = shell.querySelector('.mt-panels');
 		const menuToggle = shell.querySelector('[data-menu-toggle]');
 		const mobileNav = shell.querySelector('[data-mobile-nav]');
-		const mega = shell.querySelector('[data-mega]');
-		const megaTrigger = shell.querySelector('[data-mega-trigger]');
 
 		function setInterest(value) {
 			if (!value) return;
@@ -1046,19 +973,10 @@ const interestForOpen = openItems.map((_, i) => {
 			menuToggle.setAttribute('aria-expanded', 'false');
 		}
 
-		function setMegaOpen(open) {
-			if (!(mega instanceof HTMLElement) || !(megaTrigger instanceof HTMLButtonElement)) return;
-			mega.hidden = !open;
-			megaTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-		}
-
-		function closeMega() {
-			setMegaOpen(false);
-		}
-
 		function activateMain(id, { focus = true, interest } = {}) {
+			const onHome = id === 'home';
 			allMainTriggers.forEach((tab) => {
-				const active = tab.getAttribute('data-main-tab') === id;
+				const active = !onHome && tab.getAttribute('data-main-tab') === id;
 				tab.classList.toggle('is-active', active);
 				if (tab.getAttribute('role') === 'tab') {
 					tab.setAttribute('aria-selected', active ? 'true' : 'false');
@@ -1066,36 +984,33 @@ const interestForOpen = openItems.map((_, i) => {
 				}
 			});
 			mainPanels.forEach((panel) => {
-				const active = panel.getAttribute('data-main-panel') === id;
+				const active = !onHome && panel.getAttribute('data-main-panel') === id;
 				panel.classList.toggle('is-active', active);
 				panel.hidden = !active;
 			});
-			if (intro instanceof HTMLElement) {
-				intro.classList.toggle('is-collapsed', id !== 'deliver');
+			if (homeLanding instanceof HTMLElement) {
+				homeLanding.hidden = !onHome;
+			}
+			if (panelsRoot instanceof HTMLElement) {
+				panelsRoot.hidden = onHome;
 			}
 			if (interest) setInterest(interest);
 			closeMobileNav();
-			if (id !== 'deliver') closeMega();
-			if (focus) {
+			if (focus && !onHome) {
 				const panel = mainPanels.find((p) => p.getAttribute('data-main-panel') === id);
 				panel?.focus({ preventScroll: true });
 			}
 			const url = new URL(window.location.href);
-			url.hash = id;
+			if (onHome) {
+				url.hash = '';
+			} else {
+				url.hash = id;
+			}
 			history.replaceState(null, '', url);
 		}
 
 		mainTabs.forEach((tab) => {
-			tab.addEventListener('click', () => {
-				const id = tab.getAttribute('data-main-tab') || 'deliver';
-				if (id === 'deliver' && tab.hasAttribute('data-mega-trigger')) {
-					const willOpen = mega instanceof HTMLElement ? mega.hidden : false;
-					activateMain('deliver', { focus: false });
-					setMegaOpen(willOpen);
-					return;
-				}
-				activateMain(id);
-			});
+			tab.addEventListener('click', () => activateMain(tab.getAttribute('data-main-tab') || 'deliver'));
 		});
 		mobileTabs.forEach((tab) => {
 			tab.addEventListener('click', () => activateMain(tab.getAttribute('data-main-tab') || 'deliver'));
@@ -1106,30 +1021,16 @@ const interestForOpen = openItems.map((_, i) => {
 				const open = mobileNav.hidden;
 				mobileNav.hidden = !open;
 				menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-				if (open) closeMega();
 			});
 		}
-
-		document.addEventListener('click', (event) => {
-			if (!(mega instanceof HTMLElement) || mega.hidden) return;
-			const target = event.target;
-			if (!(target instanceof Node)) return;
-			const wrap = shell.querySelector('[data-mega-wrap]');
-			if (wrap instanceof HTMLElement && !wrap.contains(target)) closeMega();
-		});
-
-		document.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') closeMega();
-		});
 
 		shell.querySelectorAll('[data-switch-main]').forEach((el) => {
 			el.addEventListener('click', (event) => {
 				if (el instanceof HTMLAnchorElement && el.getAttribute('href')?.startsWith('http')) return;
 				event.preventDefault();
-				activateMain(el.getAttribute('data-switch-main') || 'deliver', {
+				activateMain(el.getAttribute('data-switch-main') || 'home', {
 					interest: el.getAttribute('data-interest') || undefined,
 				});
-				closeMega();
 			});
 		});
 
@@ -1142,6 +1043,8 @@ const interestForOpen = openItems.map((_, i) => {
 						: 'about'
 					: hash;
 			activateMain(mapped, { focus: false });
+		} else {
+			activateMain('home', { focus: false });
 		}
 	}
 

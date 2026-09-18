@@ -1,50 +1,86 @@
 ---
+import type { CollectionEntry } from 'astro:content';
 import CompanyLayout from '../layouts/CompanyLayout.astro';
 import MediaPlaceholder from './MediaPlaceholder.astro';
-
-type Media = {
-	kind?: 'image' | 'video';
-	src?: string;
-	label: string;
-	need: string;
-	message: string;
-};
-
-type ProblemItem = { title: string; body: string };
 
 interface Props {
 	lang: 'en' | 'no';
 	alternateLangHref: string;
-	data: {
-		title: string;
-		description: string;
-		problemTitle: string;
-		problemLead: string;
-		problemItems: ProblemItem[];
-		solutionTitle: string;
-		solutionBody: string;
-		productTitle: string;
-		productLead: string;
-		edge?: string;
-		applicationsTitle: string;
-		applications: string[];
-		proofLine?: string;
-		infoCta?: string;
-		infoHref?: string;
-		infoExternal?: boolean;
-		portalCta: string;
-		portalHref: string;
-		portalExternal?: boolean;
-		contactCta: string;
-		contactHref: string;
-		media: Media;
-	};
+	entry: CollectionEntry<'products'>;
 }
 
-const { lang, alternateLangHref, data } = Astro.props;
-const homePath = lang === 'no' ? '/no/' : '/';
-const backLabel = lang === 'no' ? 'Tilbake til forsiden' : 'Back to home';
+const { lang, alternateLangHref, entry } = Astro.props;
+const data = entry.data;
+
+const problemItems = (
+	[
+		{ title: data.problem1Title, body: data.problem1Body },
+		data.problem2Title ? { title: data.problem2Title, body: data.problem2Body ?? '' } : null,
+		data.problem3Title ? { title: data.problem3Title, body: data.problem3Body ?? '' } : null,
+		data.problem4Title ? { title: data.problem4Title, body: data.problem4Body ?? '' } : null,
+	] as Array<{ title: string; body: string } | null>
+).filter((item): item is { title: string; body: string } => Boolean(item));
+
+const applications = [
+	data.application1,
+	data.application2,
+	data.application3,
+	data.application4,
+	data.application5,
+	data.application6,
+].filter((item): item is string => Boolean(item));
+
+const metrics = (
+	[
+		data.metric1Value && data.metric1Label ? { value: data.metric1Value, label: data.metric1Label } : null,
+		data.metric2Value && data.metric2Label ? { value: data.metric2Value, label: data.metric2Label } : null,
+		data.metric3Value && data.metric3Label ? { value: data.metric3Value, label: data.metric3Label } : null,
+	] as Array<{ value: string; label: string } | null>
+).filter((item): item is { value: string; label: string } => Boolean(item));
+
+const capabilities = (
+	[
+		data.capability1Title ? { title: data.capability1Title, body: data.capability1Body ?? '' } : null,
+		data.capability2Title ? { title: data.capability2Title, body: data.capability2Body ?? '' } : null,
+		data.capability3Title ? { title: data.capability3Title, body: data.capability3Body ?? '' } : null,
+		data.capability4Title ? { title: data.capability4Title, body: data.capability4Body ?? '' } : null,
+		data.capability5Title ? { title: data.capability5Title, body: data.capability5Body ?? '' } : null,
+		data.capability6Title ? { title: data.capability6Title, body: data.capability6Body ?? '' } : null,
+	] as Array<{ title: string; body: string } | null>
+).filter((item): item is { title: string; body: string } => Boolean(item));
+
+const installItems = [data.install1, data.install2, data.install3, data.install4].filter(
+	(item): item is string => Boolean(item),
+);
+
+const portalFeatures = [data.portalFeature1, data.portalFeature2, data.portalFeature3, data.portalFeature4].filter(
+	(item): item is string => Boolean(item),
+);
+
+const specs = (
+	[
+		data.spec1Label && data.spec1Value ? { label: data.spec1Label, value: data.spec1Value } : null,
+		data.spec2Label && data.spec2Value ? { label: data.spec2Label, value: data.spec2Value } : null,
+		data.spec3Label && data.spec3Value ? { label: data.spec3Label, value: data.spec3Value } : null,
+		data.spec4Label && data.spec4Value ? { label: data.spec4Label, value: data.spec4Value } : null,
+	] as Array<{ label: string; value: string } | null>
+).filter((item): item is { label: string; value: string } => Boolean(item));
+
+const benefits = [data.benefit1, data.benefit2, data.benefit3, data.benefit4, data.benefit5, data.benefit6].filter(
+	(item): item is string => Boolean(item),
+);
+
+const faqItems = (
+	[
+		data.faq1Question && data.faq1Answer ? { q: data.faq1Question, a: data.faq1Answer } : null,
+		data.faq2Question && data.faq2Answer ? { q: data.faq2Question, a: data.faq2Answer } : null,
+		data.faq3Question && data.faq3Answer ? { q: data.faq3Question, a: data.faq3Answer } : null,
+		data.faq4Question && data.faq4Answer ? { q: data.faq4Question, a: data.faq4Answer } : null,
+	] as Array<{ q: string; a: string } | null>
+).filter((item): item is { q: string; a: string } => Boolean(item));
+
 const portalIsContact = data.portalHref.includes('#contact');
+const isVideoHero = data.mediaKind === 'video' && Boolean(data.mediaSrc);
 ---
 
 <CompanyLayout
@@ -53,113 +89,323 @@ const portalIsContact = data.portalHref.includes('#contact');
 	lang={lang}
 	alternateLangHref={alternateLangHref}
 >
-	<article class="container product-page">
-		<p class="product-page-back">
-			<a href={homePath}>{backLabel}</a>
-		</p>
-		<h1 class="section-title">{data.title}</h1>
-		<p class="section-lead">{data.description}</p>
+	<article class="product-page">
+		{
+			isVideoHero ? (
+				<section class="product-hero" aria-label={data.title}>
+					<div class="product-hero-visual">
+						<MediaPlaceholder
+							label={data.mediaLabel}
+							need={data.mediaNeed}
+							message={data.mediaMessage}
+							src={data.mediaSrc}
+							kind="video"
+							aspect="hero"
+							bleed
+							ambient
+						/>
+						<div class="product-hero-veil" aria-hidden="true" />
+						<div class="product-hero-copy">
+							<h1 class="product-hero-title">{data.title}</h1>
+							<p class="product-hero-lead">{data.description}</p>
+							<a
+								href={data.portalHref}
+								class="btn btn-primary"
+								target={data.portalExternal ? '_blank' : undefined}
+								rel={data.portalExternal ? 'noopener' : undefined}
+							>
+								{data.portalCta}
+							</a>
+						</div>
+					</div>
+				</section>
+			) : null
+		}
 
-		<section class="product-page-section">
-			<h2>{data.problemTitle}</h2>
-			<p class="section-lead">{data.problemLead}</p>
-			<div class="problem-grid">
-				{data.problemItems.map((item) => (
-					<article class="problem-item">
-						<h3>{item.title}</h3>
-						<p>{item.body}</p>
-					</article>
-				))}
-			</div>
-		</section>
+		<div class="container product-page-main">
+			{
+				!isVideoHero && (
+					<>
+						<h1 class="section-title">{data.title}</h1>
+						<p class="section-lead">{data.description}</p>
+					</>
+				)
+			}
 
-		<section class="product-page-section">
-			<h2>{data.solutionTitle}</h2>
-			<p class="product-page-body">{data.solutionBody}</p>
-		</section>
-
-		<section class="product-page-section">
-			<h2>{data.productTitle}</h2>
-			<p class="section-lead">{data.productLead}</p>
-			<div class="product-detail">
-				<div class="product-detail-media">
-					<MediaPlaceholder
-						label={data.media.label}
-						need={data.media.need}
-						message={data.media.message}
-						src={data.media.src}
-						kind={data.media.kind}
-						aspect="product"
-					/>
+			<section class="product-page-section">
+				<h2>{data.problemTitle}</h2>
+				<p class="section-lead">{data.problemLead}</p>
+				<div class="problem-grid">
+					{problemItems.map((item) => (
+						<article class="problem-item">
+							<h3>{item.title}</h3>
+							<p>{item.body}</p>
+						</article>
+					))}
 				</div>
-				<div class="product-detail-body">
-					{data.edge && <p class="product-edge">{data.edge}</p>}
-					<div class="product-applications">
-						<h3 class="product-applications-title">{data.applicationsTitle}</h3>
-						<ul class="product-applications-list">
-							{data.applications.map((app) => (
-								<li>{app}</li>
+			</section>
+
+			<section class="product-page-section">
+				<h2>{data.solutionTitle}</h2>
+				<p class="product-page-body">{data.solutionBody}</p>
+			</section>
+
+			{
+				metrics.length > 0 && (
+					<section class="product-page-section">
+						{data.metricsTitle && <h2>{data.metricsTitle}</h2>}
+						<div class="metrics-grid">
+							{metrics.map((item) => (
+								<div class="metric-item">
+									<p class="metric-value">{item.value}</p>
+									<p class="metric-label">{item.label}</p>
+								</div>
+							))}
+						</div>
+					</section>
+				)
+			}
+
+			{
+				capabilities.length > 0 && (
+					<section class="product-page-section">
+						{data.capabilitiesTitle && <h2>{data.capabilitiesTitle}</h2>}
+						<div class="capability-grid">
+							{capabilities.map((item) => (
+								<article class="capability-item">
+									<h3>{item.title}</h3>
+									{item.body && <p>{item.body}</p>}
+								</article>
+							))}
+						</div>
+					</section>
+				)
+			}
+
+			<section class="product-page-section">
+				<h2>{data.productTitle}</h2>
+				<p class="section-lead">{data.productLead}</p>
+				<div class:list={['product-detail', isVideoHero && 'product-detail--text-only']}>
+					{
+						!isVideoHero && (
+							<div class="product-detail-media">
+								<MediaPlaceholder
+									label={data.mediaLabel}
+									need={data.mediaNeed}
+									message={data.mediaMessage}
+									src={data.mediaSrc}
+									kind={data.mediaKind}
+									aspect="product"
+								/>
+							</div>
+						)
+					}
+					<div class="product-detail-body">
+						{data.edge && <p class="product-edge">{data.edge}</p>}
+						<div class="product-applications">
+							<h3 class="product-applications-title">{data.applicationsTitle}</h3>
+							<ul class="product-applications-list">
+								{applications.map((app) => (
+									<li>{app}</li>
+								))}
+							</ul>
+						</div>
+						{data.proofLine && <p class="product-proof">{data.proofLine}</p>}
+						{
+							data.historyCta && data.historyHref && (
+								<p class="product-history">
+									<a href={data.historyHref}>{data.historyCta}</a>
+								</p>
+							)
+						}
+						<div class="product-actions">
+							<a
+								href={data.portalHref}
+								class="btn btn-primary"
+								target={data.portalExternal ? '_blank' : undefined}
+								rel={data.portalExternal ? 'noopener' : undefined}
+							>
+								{data.portalCta}
+							</a>
+							{
+								!portalIsContact && (
+									<a href={data.contactHref} class="btn btn-ghost">
+										{data.contactCta}
+									</a>
+								)
+							}
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{
+				installItems.length > 0 && (
+					<section class="product-page-section">
+						{data.installTitle && <h2>{data.installTitle}</h2>}
+						{data.installLead && <p class="section-lead">{data.installLead}</p>}
+						<ul class="product-applications-list install-list">
+							{installItems.map((item) => (
+								<li>{item}</li>
 							))}
 						</ul>
-					</div>
-					{data.proofLine && <p class="product-proof">{data.proofLine}</p>}
-					<div class="product-actions">
-						{
-							data.infoCta && data.infoHref && (
-								<a
-									href={data.infoHref}
-									class="btn btn-ghost"
-									target={data.infoExternal ? '_blank' : undefined}
-									rel={data.infoExternal ? 'noopener' : undefined}
-								>
-									{data.infoCta}
-								</a>
-							)
-						}
-						<a
-							href={data.portalHref}
-							class="btn btn-primary"
-							target={data.portalExternal ? '_blank' : undefined}
-							rel={data.portalExternal ? 'noopener' : undefined}
-						>
-							{data.portalCta}
-						</a>
-						{
-							!portalIsContact && (
-								<a href={data.contactHref} class="btn btn-ghost">
-									{data.contactCta}
-								</a>
-							)
-						}
-					</div>
-				</div>
-			</div>
-		</section>
+					</section>
+				)
+			}
+
+			{
+				portalFeatures.length > 0 && (
+					<section class="product-page-section">
+						{data.portalTitle && <h2>{data.portalTitle}</h2>}
+						{data.portalLead && <p class="section-lead">{data.portalLead}</p>}
+						<ul class="product-applications-list">
+							{portalFeatures.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</section>
+				)
+			}
+
+			{
+				data.technicalBody && (
+					<section class="product-page-section">
+						{data.technicalTitle && <h2>{data.technicalTitle}</h2>}
+						<p class="product-page-body">{data.technicalBody}</p>
+					</section>
+				)
+			}
+
+			{
+				specs.length > 0 && (
+					<section class="product-page-section">
+						{data.specsTitle && <h2>{data.specsTitle}</h2>}
+						<ul class="product-specs-list">
+							{specs.map((item) => (
+								<li>
+									<strong>{item.label}</strong>
+									<span>{item.value}</span>
+								</li>
+							))}
+						</ul>
+					</section>
+				)
+			}
+
+			{
+				benefits.length > 0 && (
+					<section class="product-page-section">
+						{data.benefitsTitle && <h2>{data.benefitsTitle}</h2>}
+						<ul class="product-applications-list">
+							{benefits.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</section>
+				)
+			}
+
+			{
+				faqItems.length > 0 && (
+					<section class="product-page-section product-faq">
+						{data.faqTitle && <h2>{data.faqTitle}</h2>}
+						{data.faqLead && <p class="section-lead">{data.faqLead}</p>}
+						<div class="faq-list">
+							{faqItems.map((item) => (
+								<details class="faq-item">
+									<summary>{item.q}</summary>
+									<p>{item.a}</p>
+								</details>
+							))}
+						</div>
+					</section>
+				)
+			}
+		</div>
 	</article>
 </CompanyLayout>
 
 <style>
 	.product-page {
-		padding: 2rem 0 1rem;
+		padding: 0 0 1rem;
 	}
-	.product-page-back {
-		margin: 0 0 1.25rem;
+	.product-page-main {
+		padding-top: clamp(2rem, 4vw, 3rem);
+		padding-bottom: clamp(1rem, 3vw, 2rem);
 	}
-	.product-page-back a {
-		color: var(--color-text-muted);
-		font-size: 0.92rem;
-		font-weight: 600;
-		text-decoration: none;
+	.product-hero {
+		padding: 0;
 	}
-	.product-page-back a:hover {
-		color: var(--color-accent);
+	.product-hero-visual {
+		position: relative;
+		margin: 0;
+		overflow: hidden;
+		/* Fill first viewport under the site header on 16:9 */
+		min-height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
+		height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
+	}
+	.product-hero-visual :global(.media-ph--bleed.media-ph--hero) {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+		min-height: 100%;
+	}
+	.product-hero-veil {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 1;
+		background: linear-gradient(
+			180deg,
+			rgba(7, 16, 24, 0.22) 0%,
+			rgba(7, 16, 24, 0.38) 42%,
+			rgba(7, 16, 24, 0.86) 76%,
+			rgba(7, 16, 24, 0.96) 100%
+		);
+	}
+	.product-hero-copy {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: clamp(2.5rem, 10vh, 5.5rem);
+		z-index: 2;
+		width: var(--container);
+		max-width: 100%;
+		margin-inline: auto;
+		padding-inline: clamp(1rem, 4vw, 3rem);
+		animation: product-hero-in 0.7s ease both;
+	}
+	.product-hero-title {
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(2.15rem, 4.8vw, 3.6rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
+		margin: 0 0 0.75rem;
+	}
+	.product-hero-lead {
+		margin: 0 0 1.35rem;
+		color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted));
+		font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+		line-height: 1.55;
+		max-width: min(38rem, 92%);
+	}
+	@keyframes product-hero-in {
+		from {
+			opacity: 0;
+			transform: translateY(0.6rem);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
 	}
 	.product-page-section {
 		margin: 2.5rem 0;
 	}
 	.product-page-section h2 {
 		font-family: var(--font-heading);
-		font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+		font-size: clamp(1.45rem, 2.8vw, 2rem);
 		margin: 0 0 0.5rem;
 	}
 	.product-page-body {
@@ -169,38 +415,76 @@ const portalIsContact = data.portalHref.includes('#contact');
 		margin: 0;
 		font-size: 1.05rem;
 	}
-	.problem-grid {
+	.problem-grid,
+	.capability-grid {
 		display: grid;
 		gap: 1.25rem;
 	}
 	@media (min-width: 800px) {
-		.problem-grid {
-			grid-template-columns: repeat(3, 1fr);
+		.problem-grid,
+		.capability-grid {
+			grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 		}
 	}
-	.problem-item {
+	.problem-item,
+	.capability-item {
 		border-top: 2px solid var(--color-accent);
 		padding-top: 0.9rem;
 	}
-	.problem-item h3 {
+	.problem-item h3,
+	.capability-item h3 {
 		font-family: var(--font-heading);
 		font-size: 1.05rem;
 		margin: 0 0 0.4rem;
 	}
-	.problem-item p {
+	.problem-item p,
+	.capability-item p {
 		margin: 0;
 		color: var(--color-text-muted);
 		font-size: 0.95rem;
+	}
+	.metrics-grid {
+		display: grid;
+		gap: 1.25rem;
+		margin-top: 0.75rem;
+	}
+	@media (min-width: 720px) {
+		.metrics-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	.metric-item {
+		border-top: 2px solid var(--color-accent);
+		padding-top: 0.75rem;
+	}
+	.metric-value {
+		font-family: var(--font-heading);
+		font-size: clamp(1.6rem, 3vw, 2rem);
+		font-weight: 700;
+		margin: 0 0 0.35rem;
+		letter-spacing: -0.02em;
+	}
+	.metric-label {
+		margin: 0;
+		color: var(--color-text-muted);
+		font-size: 0.92rem;
+		line-height: 1.4;
+	}
+	.install-list {
+		margin-top: 0.5rem;
 	}
 	.product-detail {
 		display: grid;
 		gap: 1.5rem;
 	}
 	@media (min-width: 880px) {
-		.product-detail {
+		.product-detail:not(.product-detail--text-only) {
 			grid-template-columns: 1.05fr 1fr;
 			align-items: start;
 		}
+	}
+	.product-detail--text-only {
+		max-width: 40rem;
 	}
 	.product-edge {
 		font-weight: 600;
@@ -232,5 +516,56 @@ const portalIsContact = data.portalHref.includes('#contact');
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.55rem;
+	}
+	.product-specs-list {
+		list-style: none;
+		margin: 0.75rem 0 0;
+		padding: 0;
+		display: grid;
+		gap: 0.75rem;
+		max-width: 40rem;
+	}
+	.product-specs-list li {
+		display: grid;
+		gap: 0.15rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--color-border);
+	}
+	.product-specs-list strong {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--color-text-muted);
+	}
+	.product-specs-list span {
+		color: var(--color-text);
+		font-size: 1.02rem;
+	}
+	.product-history {
+		margin: 0 0 1rem;
+	}
+	.product-history a {
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+	.faq-list {
+		display: grid;
+		gap: 0.65rem;
+		max-width: 42rem;
+	}
+	.faq-item {
+		border-top: 1px solid var(--color-border);
+		padding: 0.85rem 0 0.35rem;
+	}
+	.faq-item summary {
+		cursor: pointer;
+		font-weight: 600;
+		color: var(--color-text);
+	}
+	.faq-item p {
+		margin: 0.55rem 0 0.25rem;
+		color: var(--color-text-muted);
+		line-height: 1.55;
+		font-size: 0.95rem;
 	}
 </style>

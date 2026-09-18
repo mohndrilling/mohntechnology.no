@@ -1,40 +1,61 @@
 ---
-import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import CompanyLayout from '../../layouts/CompanyLayout.astro';
 import { getEntry, render } from 'astro:content';
+import { productPath } from '../../lib/productPaths';
 
 const locale = 'en';
-const home = await getEntry('pages', 'home.en');
 const doc = await getEntry('history', 'history.en');
-if (!home) throw new Error('Content page "home.en" not found');
 if (!doc) throw new Error('Content page "history.en" not found');
-
 const { Content } = await render(doc);
-const { footerBrand, footerTagline, footerCopy, navFeatures, navProduct, navContact, navHistory, navFaq, navPortal, portalUrl } = home.data;
+const productHref = productPath('en', 'salmoscan');
+const backLabel = 'Back to Salmoscan';
 ---
-<MarketingLayout
+<CompanyLayout
 	title={doc.data.title}
 	description={doc.data.description}
 	lang={locale}
-	homePath="/salmoscan/"
-	historyPath="/salmoscan/history"
-	currentPage="history"
-	navFeatures={navFeatures}
-	navProduct={navProduct}
-	navContact={navContact}
-	navHistory={navHistory}
-	navFaq={navFaq}
-	navPortal={navPortal}
-	portalUrl={portalUrl}
-	footerBrand={footerBrand}
-	footerTagline={footerTagline}
-	footerCopy={footerCopy}
-	companyHomePath="/"
+	alternateLangHref="/salmoscan/no/history/"
 >
-	<main>
-		<article class="section history-doc">
-			<div class="container markdown-prose">
-				<Content />
-			</div>
-		</article>
-	</main>
-</MarketingLayout>
+	<article class="container history-page">
+		<p class="history-back">
+			<a href={productHref}>{backLabel}</a>
+		</p>
+		<div class="history-body">
+			<Content />
+		</div>
+	</article>
+</CompanyLayout>
+
+<style>
+	.history-page {
+		padding: 2rem 0 3rem;
+		max-width: 46rem;
+	}
+	.history-back {
+		margin: 0 0 1.25rem;
+	}
+	.history-back a {
+		color: var(--color-text-muted);
+		font-size: 0.92rem;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.history-back a:hover {
+		color: var(--color-accent);
+	}
+	.history-body :global(h1) {
+		font-family: var(--font-heading);
+		font-size: clamp(1.75rem, 3vw, 2.25rem);
+		margin: 0 0 1rem;
+	}
+	.history-body :global(h2) {
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		margin: 2rem 0 0.65rem;
+	}
+	.history-body :global(p),
+	.history-body :global(li) {
+		color: var(--color-text-muted);
+		line-height: 1.65;
+	}
+</style>

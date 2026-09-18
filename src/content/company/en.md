@@ -11,30 +11,38 @@ navCta: Book a call
 navProductsColumn: Products
 
 deliverMarkets:
-  - title: Treatment & wellboat
-    blurb: Population-level welfare and process data in pipe flow during delousing and related operations.
+  - title: Wellboats and delousing operations
+    blurb: Better fish-welfare control on board — and more precise data for decisions during the operation.
     product: Salmoscan
     cta: See Salmoscan
+    image: /media/company/products/salmoscan/salmoscan-renne.jpg
+    imageAlt: Salmoscan trough scanner
   - title: Cod farming
-    blurb: Species-specific biomass and welfare where salmon-centric cameras fall short.
+    blurb: Camera and AI — built specifically for cod farming.
     product: Codcam
     cta: See Codcam
-  - title: Wild fish & rivers
-    blurb: Long deployments for population insight, pink salmon, and wild salmonids.
+    image: /media/company/products/codcam/codcam-stainless.png
+    imageAlt: Codcam stainless steel camera
+  - title: Wild salmon monitoring
+    blurb: Long deployments for population insight in rivers.
     product: Rivercam
     cta: See Rivercam
+    image: /media/company/products/rivercam/rivercam-ruse.jpg
+    imageAlt: Rivercam in a river
+    video: /media/company/products/rivercam/rivercam-flow.mp4
 
 hero:
   brand: Mohn Technology
-  title: Computer vision that turns fish passage into operational insight
-  lead: Hardware, AI models, and portals for aquaculture and wild-fish monitoring — delivered as Salmoscan, Codcam, and Rivercam.
+  title: Computer vision for the marine environment.
+  lead: Marine hardware, AI models, and insight portals — built in Bergen.
   ctaPrimary: What we deliver
   ctaSecondary: Book a call
   media:
     kind: video
+    src: /media/company/products/rivercam/20260822_065934_978.mp4
     label: Operations atmosphere
-    need: Short clip or still of MT gear in a real setting — treatment vessel deck, pipe install, or river deployment. Not a studio product shot alone; include people or site context if possible.
-    message: We work where the fish and the operations are — marine industry credibility, not abstract “AI”.
+    need: ""
+    message: ""
 
 problemTitle: Aquaculture still runs treatments and quotas with too little live data on the fish.
 problemLead: Populations are hard to see clearly in cages, on vessels, and in rivers. That uncertainty costs money, slows regulation, and leaves welfare and biomass decisions under-informed.
@@ -46,8 +54,8 @@ problemItems:
   - title: Cod farming without species-specific vision
     body: Cod production is scaling fast, while camera and AI tools remain geared to salmon — weak biomass and welfare insight for the species that is actually in the pen.
 
-productsTitle: Our products
-productsLead: Named product lines — same technology stack, different operational doors. Open a product page for the problem, the solution, and portal access.
+productsTitle: Products
+productsLead: Choose a product line for the problem it solves, how it works, and portal access.
 products:
   - slug: salmoscan
     title: Salmoscan
@@ -138,19 +146,6 @@ addressLines:
 footerBrand: Mohn Technology
 footerTagline: Operational insight through computer vision
 footerCopy: "© Mohn Technology AS"
-footerNav:
-  - label: What we deliver
-    href: "#deliver"
-  - label: Customer stories
-    href: "#work"
-  - label: Salmoscan
-    href: "/products/salmoscan/"
-  - label: About
-    href: "#about"
-  - label: Careers
-    href: "#about"
-  - label: Contact
-    href: "#contact"
 footerLegal:
   - label: Privacy
     href: "/privacy/"

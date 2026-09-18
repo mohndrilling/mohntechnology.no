@@ -1,7 +1,7 @@
 ---
 name: Saber Derouiche
 roleEn: Senior Developer
-roleNo: Seniørutvikler
+roleNo: Seniorutvikler
 email: ""
 linkedin: ""
 photo: saber-derouiche.jpg

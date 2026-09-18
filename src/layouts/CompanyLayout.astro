@@ -19,6 +19,7 @@ const data = home.data;
 const homePath = lang === 'no' ? '/no/' : '/';
 const otherLangHref = alternateLangHref ?? (lang === 'no' ? '/' : '/no/');
 const otherLangLabel = lang === 'no' ? 'English' : 'Norsk';
+const homeLabel = lang === 'no' ? 'Hjem' : 'Home';
 
 function resolveHref(href: string) {
 	if (href.startsWith('http') || href.startsWith('/')) return href;
@@ -26,13 +27,6 @@ function resolveHref(href: string) {
 	return href;
 }
 
-const navItems = data.footerNav.map((item) => ({
-	...item,
-	href: resolveHref(item.href),
-}));
-const mid = Math.ceil(navItems.length / 2);
-const navCol1 = navItems.slice(0, mid);
-const navCol2 = navItems.slice(mid);
 const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 ---
 <BaseLayout title={title} description={description} lang={lang} brand="mohn">
@@ -44,11 +38,15 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 						<img
 							src="/media/company/brand/mohn-technology-logo.png"
 							alt={data.footerBrand}
-							width="180"
-							height="125"
+							width="963"
+							height="670"
 							decoding="async"
+							fetchpriority="high"
 						/>
 					</a>
+					<nav class="site-top-nav" aria-label={homeLabel}>
+						<a class="site-top-home" href={homePath}>{homeLabel}</a>
+					</nav>
 					<a class="site-top-lang" href={otherLangHref}>
 						{otherLangLabel}
 					</a>
@@ -61,23 +59,6 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 	<footer class="site-footer">
 		<div class="container site-footer-inner">
 			<div class="site-footer-top">
-				<nav class="site-footer-nav" aria-label={lang === 'no' ? 'Bunnmeny' : 'Footer'}>
-					<ul class="site-footer-nav-col">
-						{navCol1.map((item) => (
-							<li>
-								<a href={item.href}>{item.label}</a>
-							</li>
-						))}
-					</ul>
-					<ul class="site-footer-nav-col">
-						{navCol2.map((item) => (
-							<li>
-								<a href={item.href}>{item.label}</a>
-							</li>
-						))}
-					</ul>
-				</nav>
-
 				<div class="site-footer-brand">
 					<p class="site-footer-logo">{data.footerBrand}</p>
 					<a class="site-footer-email" href={`mailto:${data.contactEmail}`}>{data.contactEmail}</a>
@@ -93,7 +74,7 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 				<ul class="site-footer-legal">
 					{data.footerLegal.map((item) => (
 						<li>
-							<a href={item.href}>{item.label}</a>
+							<a href={resolveHref(item.href)}>{item.label}</a>
 						</li>
 					))}
 				</ul>
@@ -142,7 +123,6 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 		.btn-primary:hover {
 			background: var(--color-accent-hover);
 			text-decoration: none;
-			box-shadow: 0 0 24px var(--color-accent-dim);
 		}
 		.btn-ghost {
 			background: transparent;
@@ -158,15 +138,15 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 		.section-title {
 			font-family: var(--font-heading);
 			font-weight: 700;
-			font-size: clamp(1.75rem, 3vw, 2.25rem);
+			font-size: clamp(1.85rem, 3.4vw, 2.55rem);
 			margin: 0 0 0.5rem;
 			letter-spacing: -0.02em;
 		}
 		.section-lead {
 			color: var(--color-text-muted);
-			font-size: 1.08rem;
+			font-size: clamp(1.08rem, 1.4vw, 1.18rem);
 			margin: 0 0 1.75rem;
-			max-width: 42rem;
+			max-width: min(46rem, 100%);
 		}
 
 		.site-top {
@@ -181,7 +161,7 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			min-height: 3.5rem;
+			min-height: 4.5rem;
 			gap: 1rem;
 		}
 		.site-top-logo {
@@ -192,8 +172,9 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 		}
 		.site-top-logo img {
 			display: block;
-			height: 2.4rem;
+			height: clamp(3.1rem, 5.5vw, 3.75rem);
 			width: auto;
+			image-rendering: -webkit-optimize-contrast;
 		}
 		.site-top-logo:hover {
 			opacity: 0.88;
@@ -201,6 +182,21 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 		}
 		[data-theme='light'] .site-top-logo img {
 			filter: invert(1);
+		}
+		.site-top-nav {
+			display: flex;
+			align-items: center;
+			margin-right: auto;
+		}
+		.site-top-home {
+			color: var(--color-text);
+			font-size: 0.95rem;
+			font-weight: 600;
+			text-decoration: none;
+			padding: 0.35rem 0.15rem;
+		}
+		.site-top-home:hover {
+			color: var(--color-accent);
 		}
 		.site-top-lang {
 			color: var(--color-text-muted);
@@ -234,33 +230,13 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 		.site-footer-top {
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-between;
+			justify-content: flex-start;
 			gap: 2.5rem 3rem;
 			margin-bottom: clamp(2.5rem, 6vw, 4rem);
 		}
-		.site-footer-nav {
-			display: flex;
-			gap: clamp(2rem, 6vw, 4.5rem);
-		}
-		.site-footer-nav-col {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			display: grid;
-			gap: 0.65rem;
-		}
-		.site-footer-nav-col a {
-			font-size: 1rem;
-			font-weight: 500;
-			text-decoration: none;
-		}
-		.site-footer-nav-col a:hover {
-			text-decoration: underline;
-		}
 		.site-footer-brand {
-			text-align: right;
+			text-align: left;
 			max-width: 22rem;
-			margin-left: auto;
 		}
 		.site-footer-logo {
 			margin: 0 0 0.85rem;
@@ -299,7 +275,7 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 			font-size: 0.9rem;
 		}
 		.site-footer-meta {
-			text-align: right;
+			text-align: left;
 		}
 		.site-footer-social {
 			margin: 0 0 0.45rem;
@@ -315,10 +291,6 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 			.site-footer-brand,
 			.site-footer-meta {
 				text-align: left;
-				margin-left: 0;
-			}
-			.site-footer-nav {
-				width: 100%;
 			}
 		}
 

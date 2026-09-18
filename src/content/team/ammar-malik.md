@@ -1,7 +1,7 @@
 ---
 name: Ammar Malik
 roleEn: Senior Developer
-roleNo: Seniørutvikler
+roleNo: Seniorutvikler
 email: ""
 linkedin: ""
 photo: ammar-malik.jpg
