@@ -1,0 +1,19 @@
+# Contact form API
+# Build from repo root:
+#   docker build -f docker/Dockerfile.contactapi \
+#     -t docker.mohntechnology.no/mohntechnology-contactapi:latest .
+
+FROM golang:1.22-bookworm AS build
+WORKDIR /src
+COPY backend/go.mod ./
+RUN go mod download
+COPY backend/ ./
+RUN CGO_ENABLED=0 go build -o /out/contactapi ./cmd/contactapi
+
+FROM debian:bookworm-slim
+COPY --from=build /etc/ssl/certs /etc/ssl/certs
+COPY --from=build /out/contactapi /usr/local/bin/contactapi
+ENV LISTEN=:8787
+EXPOSE 8787
+USER nobody
+ENTRYPOINT ["/usr/local/bin/contactapi"]
