@@ -33,7 +33,7 @@ deliverMarkets:
 
 hero:
   brand: Mohn Technology
-  title: Computer vision for the marine environment.
+  title: Applied machine vision for marine industries
   lead: Marine hardware, AI models, and insight portals — built in Bergen.
   ctaPrimary: What we deliver
   ctaSecondary: Book a call
@@ -128,7 +128,7 @@ openItems:
     cta: Contact about a vision problem
     href: "#contact"
 
-contactTitle: Book a call
+contactTitle: Get in touch
 contactLead: Tell us which product or topic you care about — we will route you to the right person.
 contactEmail: post@mohntechnology.no
 contactInterestLabel: I am interested in

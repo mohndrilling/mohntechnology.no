@@ -1,5 +1,7 @@
 ---
+import LocaleThemeControls from '../components/LocaleThemeControls.astro';
 import { getCompanyHome } from '../lib/companyContent';
+import { productPath, productSlugFromName } from '../lib/productPaths';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -17,9 +19,30 @@ const home = await getCompanyHome(lang);
 const data = home.data;
 
 const homePath = lang === 'no' ? '/no/' : '/';
-const otherLangHref = alternateLangHref ?? (lang === 'no' ? '/' : '/no/');
-const otherLangLabel = lang === 'no' ? 'English' : 'Norsk';
 const homeLabel = lang === 'no' ? 'Hjem' : 'Home';
+const mainNavLabel = lang === 'no' ? 'Hovedmeny' : 'Main navigation';
+const menuLabel = lang === 'no' ? 'Meny' : 'Menu';
+const marketsLabel = lang === 'no' ? 'Markeder' : 'Markets';
+const currentPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const linkToEn = lang === 'en' ? currentPath : (alternateLangHref ?? '/');
+const linkToNo = lang === 'no' ? currentPath : (alternateLangHref ?? '/no/');
+
+const mainNav = [
+	{ href: homePath, label: homeLabel },
+	{ href: `${homePath}#deliver`, label: data.navDeliver },
+	{ href: `${homePath}#work`, label: data.navProjects },
+	{ href: `${homePath}#about`, label: data.navAbout },
+	{ href: `${homePath}#contact`, label: data.navContact },
+];
+
+const marketsWithHref = data.deliverMarkets.map((market) => ({
+	...market,
+	href: productPath(lang, productSlugFromName(market.product)),
+}));
+const productsWithHref = data.products.map((product) => ({
+	...product,
+	href: productPath(lang, product.slug),
+}));
 
 function resolveHref(href: string) {
 	if (href.startsWith('http') || href.startsWith('/')) return href;
@@ -32,9 +55,9 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 <BaseLayout title={title} description={description} lang={lang} brand="mohn">
 	{
 		showSiteHeader && (
-			<header class="site-top">
-				<div class="container site-top-inner">
-					<a class="site-top-logo" href={homePath} aria-label={data.footerBrand}>
+			<header class="mt-header" data-header>
+				<div class="container mt-header-inner">
+					<a href={homePath} class="mt-logo" aria-label={data.footerBrand}>
 						<img
 							src="/media/company/brand/mohn-technology-logo.png"
 							alt={data.footerBrand}
@@ -44,11 +67,58 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 							fetchpriority="high"
 						/>
 					</a>
-					<nav class="site-top-nav" aria-label={homeLabel}>
-						<a class="site-top-home" href={homePath}>{homeLabel}</a>
+
+					<nav class="mt-nav" aria-label={mainNavLabel}>
+						<div class="mt-tablist">
+							{mainNav.map((item) => (
+								<a class="mt-nav-link" href={item.href}>
+									{item.label}
+								</a>
+							))}
+						</div>
 					</nav>
-					<a class="site-top-lang" href={otherLangHref}>
-						{otherLangLabel}
+
+					<div class="mt-header-tools">
+						<LocaleThemeControls locale={lang} linkToEn={linkToEn} linkToNo={linkToNo} showTheme={false} />
+						<button
+							type="button"
+							class="mt-menu-toggle"
+							data-site-menu-toggle
+							aria-expanded="false"
+							aria-controls="site-top-mobile-nav"
+						>
+							{menuLabel}
+						</button>
+					</div>
+				</div>
+
+				<div class="mt-mobile-nav container" id="site-top-mobile-nav" data-site-mobile-nav hidden>
+					<a class="mt-mobile-link" href={homePath}>
+						{homeLabel}
+					</a>
+					<a class="mt-mobile-link" href={`${homePath}#deliver`}>
+						{data.navDeliver}
+					</a>
+					<p class="mt-mobile-group">{marketsLabel}</p>
+					{marketsWithHref.map((market) => (
+						<a class="mt-mobile-link mt-mobile-sub" href={market.href}>
+							{market.title}
+						</a>
+					))}
+					<p class="mt-mobile-group">{data.navProductsColumn}</p>
+					{productsWithHref.map((product) => (
+						<a class="mt-mobile-link mt-mobile-sub" href={product.href}>
+							{product.title}
+						</a>
+					))}
+					<a class="mt-mobile-link" href={`${homePath}#work`}>
+						{data.navProjects}
+					</a>
+					<a class="mt-mobile-link" href={`${homePath}#about`}>
+						{data.navAbout}
+					</a>
+					<a class="mt-mobile-link" href={`${homePath}#contact`}>
+						{data.navContact}
 					</a>
 				</div>
 			</header>
@@ -149,63 +219,163 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 			max-width: min(46rem, 100%);
 		}
 
-		.site-top {
-			border-bottom: 1px solid var(--color-border);
-			background: var(--header-bg);
-			backdrop-filter: blur(12px);
+		.mt-header {
 			position: sticky;
 			top: 0;
-			z-index: 50;
+			z-index: 100;
+			background: var(--header-bg);
+			backdrop-filter: blur(12px);
+			border-bottom: 1px solid var(--color-border);
 		}
-		.site-top-inner {
-			display: flex;
+		.mt-header-inner {
+			display: grid;
+			grid-template-columns: auto 1fr auto;
 			align-items: center;
-			justify-content: space-between;
-			min-height: 4.5rem;
-			gap: 1rem;
+			gap: 1rem 1.5rem;
+			min-height: 4rem;
 		}
-		.site-top-logo {
+		.mt-logo {
 			display: inline-flex;
 			align-items: center;
 			text-decoration: none;
 			line-height: 0;
 		}
-		.site-top-logo img {
+		.mt-logo img {
 			display: block;
 			height: clamp(3.1rem, 5.5vw, 3.75rem);
 			width: auto;
 			image-rendering: -webkit-optimize-contrast;
 		}
-		.site-top-logo:hover {
+		.mt-logo:hover {
 			opacity: 0.88;
 			text-decoration: none;
 		}
-		[data-theme='light'] .site-top-logo img {
+		[data-theme='light'] .mt-logo img {
 			filter: invert(1);
 		}
-		.site-top-nav {
+		.mt-nav {
+			display: none;
+			justify-content: center;
+		}
+		@media (min-width: 960px) {
+			.mt-nav {
+				display: flex;
+			}
+			.mt-menu-toggle {
+				display: none;
+			}
+		}
+		.mt-tablist {
 			display: flex;
 			align-items: center;
-			margin-right: auto;
+			gap: 0.15rem;
+			flex-wrap: wrap;
+			justify-content: center;
 		}
-		.site-top-home {
-			color: var(--color-text);
-			font-size: 0.95rem;
-			font-weight: 600;
-			text-decoration: none;
-			padding: 0.35rem 0.15rem;
-		}
-		.site-top-home:hover {
-			color: var(--color-accent);
-		}
-		.site-top-lang {
+		.mt-nav-link {
+			appearance: none;
+			border: none;
+			background: transparent;
 			color: var(--color-text-muted);
-			font-size: 0.92rem;
-			font-weight: 600;
+			font-family: var(--font-body);
+			font-size: 0.95rem;
+			font-weight: 500;
+			padding: 0.55rem 0.75rem;
+			border-radius: 0;
+			cursor: pointer;
+			position: relative;
 			text-decoration: none;
 		}
-		.site-top-lang:hover {
-			color: var(--color-accent);
+		.mt-nav-link:hover {
+			color: var(--color-text);
+			text-decoration: none;
+		}
+		.mt-nav-link.is-active {
+			color: var(--color-text);
+			font-weight: 600;
+		}
+		.mt-nav-link::after {
+			content: '';
+			position: absolute;
+			left: 0.75rem;
+			right: 0.75rem;
+			bottom: 0.2rem;
+			height: 2px;
+			background: var(--color-accent);
+			border-radius: 1px;
+			transform: scaleX(0);
+			transition: transform 0.25s ease;
+		}
+		.mt-nav-link.is-active::after {
+			transform: scaleX(1);
+		}
+		.mt-header-tools {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			justify-self: end;
+		}
+		.mt-menu-toggle {
+			appearance: none;
+			border: 1px solid var(--color-border);
+			background: var(--color-surface);
+			color: var(--color-text);
+			font-family: var(--font-body);
+			font-size: 0.9rem;
+			font-weight: 600;
+			padding: 0.45rem 0.75rem;
+			border-radius: var(--radius);
+			cursor: pointer;
+		}
+		.mt-mobile-nav {
+			display: flex;
+			flex-direction: column;
+			gap: 0.05rem;
+			padding: 0.35rem 0 0.85rem;
+			border-top: 1px solid var(--color-border);
+		}
+		.mt-mobile-nav[hidden] {
+			display: none;
+		}
+		@media (min-width: 960px) {
+			.mt-mobile-nav {
+				display: none !important;
+			}
+		}
+		.mt-mobile-group {
+			margin: 0.7rem 0 0.15rem;
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: var(--color-text-muted);
+		}
+		.mt-mobile-link {
+			appearance: none;
+			border: none;
+			background: transparent;
+			text-align: left;
+			color: var(--color-text-muted);
+			font-family: var(--font-body);
+			font-size: 1rem;
+			font-weight: 500;
+			padding: 0.7rem 0.15rem;
+			cursor: pointer;
+			border-bottom: 1px solid var(--color-border);
+			text-decoration: none;
+		}
+		.mt-mobile-sub {
+			font-size: 0.95rem;
+			padding-left: 0.75rem;
+		}
+		.mt-mobile-link:hover {
+			color: var(--color-text);
+			text-decoration: none;
+		}
+		@media (max-width: 640px) {
+			.mt-header-inner {
+				grid-template-columns: 1fr auto;
+			}
 		}
 
 		.site-footer {
@@ -334,4 +504,21 @@ const linkedInUrl = data.footerLinkedInUrl?.trim() || '';
 			color: var(--color-accent);
 		}
 	</style>
+
+	<script>
+		const toggle = document.querySelector('[data-site-menu-toggle]');
+		const mobileNav = document.querySelector('[data-site-mobile-nav]');
+		if (toggle instanceof HTMLButtonElement && mobileNav instanceof HTMLElement) {
+			toggle.addEventListener('click', () => {
+				const open = mobileNav.hasAttribute('hidden');
+				if (open) {
+					mobileNav.removeAttribute('hidden');
+					toggle.setAttribute('aria-expanded', 'true');
+				} else {
+					mobileNav.setAttribute('hidden', '');
+					toggle.setAttribute('aria-expanded', 'false');
+				}
+			});
+		}
+	</script>
 </BaseLayout>

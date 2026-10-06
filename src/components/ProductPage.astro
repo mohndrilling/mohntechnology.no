@@ -340,9 +340,9 @@ const isVideoHero = data.mediaKind === 'video' && Boolean(data.mediaSrc);
 		position: relative;
 		margin: 0;
 		overflow: hidden;
-		/* Fill first viewport under the site header on 16:9 */
-		min-height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
-		height: max(28rem, calc(100svh - var(--header-h, 4.5rem)));
+		/* Narrow strip — keep video present without forcing a full-viewport scroll */
+		min-height: clamp(14rem, 38vh, 24rem);
+		height: clamp(14rem, 38vh, 24rem);
 	}
 	.product-hero-visual :global(.media-ph--bleed.media-ph--hero) {
 		position: absolute;
@@ -367,7 +367,7 @@ const isVideoHero = data.mediaKind === 'video' && Boolean(data.mediaSrc);
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: clamp(2.5rem, 10vh, 5.5rem);
+		bottom: clamp(1rem, 4vh, 2rem);
 		z-index: 2;
 		width: var(--container);
 		max-width: 100%;
@@ -378,16 +378,16 @@ const isVideoHero = data.mediaKind === 'video' && Boolean(data.mediaSrc);
 	.product-hero-title {
 		font-family: var(--font-heading);
 		font-weight: 700;
-		font-size: clamp(2.15rem, 4.8vw, 3.6rem);
+		font-size: clamp(1.75rem, 3.6vw, 2.75rem);
 		line-height: 1.08;
 		letter-spacing: -0.03em;
-		margin: 0 0 0.75rem;
+		margin: 0 0 0.5rem;
 	}
 	.product-hero-lead {
-		margin: 0 0 1.35rem;
+		margin: 0 0 0.9rem;
 		color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted));
-		font-size: clamp(1.05rem, 1.5vw, 1.2rem);
-		line-height: 1.55;
+		font-size: clamp(0.98rem, 1.35vw, 1.1rem);
+		line-height: 1.5;
 		max-width: min(38rem, 92%);
 	}
 	@keyframes product-hero-in {

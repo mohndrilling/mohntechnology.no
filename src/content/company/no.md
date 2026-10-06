@@ -33,7 +33,7 @@ deliverMarkets:
 
 hero:
   brand: Mohn Technology
-  title: Maskinsyn for det marine miljø.
+  title: Anvendt maskinsyn for marine næringer
   lead: Marin hardware, KI-modeller og innsiktsportaler — bygget i Bergen.
   ctaPrimary: Det vi leverer
   ctaSecondary: Book en samtale

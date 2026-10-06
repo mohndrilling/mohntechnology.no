@@ -3,7 +3,7 @@ slug: salmoscan
 lang: no
 title: Salmoscan
 description: Sanntids velferd, biomasse og telling — for datadrevne brønnbåtoperasjoner.
-problemTitle: Behandlingsoperasjoner kjører fortsatt med for lite levende data om fisken
+problemTitle: Behandlingsoperasjoner kjører fortsatt uten sanntidsovervåking av avlusingseffekt og fiskevelferd.
 problemLead: Bedre kontroll på fiskevelferd om bord, og mer presise data til beslutninger underveis — ikke bare etterpå.
 problem1Title: Dødelighet uten operativ tilbakemelding
 problem1Body: Manuelle stikkprøver er for trege til å styre behandlingsflyten i sanntid.
@@ -15,20 +15,20 @@ solutionTitle: Det Salmoscan løser
 solutionBody: Salmoscan er et beslutningsverktøy for oppdrettere og brønnbåter. Når fisken er om bord, gir systemet dokumentert innsikt der den faktisk passerer kamera — til operativ styring og etterprøvbar dokumentasjon.
 productTitle: Bygget for behandlingsflyt
 productLead: Rør- og rennemodeller utviklet og bygget i Norge — for drift der fisken går raskt og forholdene er krevende.
-edge: Maskinsyn skreddersydd for rørflyt på brønnbåt og behandlingslinjer.
+edge: Maskinsyn skreddersydd for brønnbåt og behandlingslinjer.
 applicationsTitle: Typiske bruksområder
 application1: Rørflyt på brønnbåt og behandlingsfartøy
 application2: Før og etter behandling — lasteside og losseside
 application3: Dokumentasjon av effekt og fiskevelferd
 proofLine: Kommersielle enheter i drift, blant annet på Ronja Nærøysund. Vektmodell utviklet i samarbeid med Havforskningsinstituttet.
-metricsTitle: Dokumenterte resultater
+metricsTitle: Verifisert i drift. 8 systemer solgt.
 metric1Value: 99,96 %
 metric1Label: Telling på brønnbåt under vanlig drift — manuelt verifisert
 metric2Value: 98 %
 metric2Label: Biomasse/vekt — verifisert med Havforskningsinstituttet
 capabilitiesTitle: Hva systemet ser
 capability1Title: Lus
-capability1Body: Telling og klassifisering i flyten — grunnlag for bedre prosessstyring.
+capability1Body: Telling og klassifisering i sanntid — muliggjør prosessstyring og evaluering av avlusingseffekt.
 capability2Title: Sår og skjelltap
 capability2Body: Automatisk vurdering av skinnhelse på bestandsnivå.
 capability3Title: Biomasse og telling

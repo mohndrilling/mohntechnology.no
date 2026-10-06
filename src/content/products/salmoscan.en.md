@@ -2,8 +2,8 @@
 slug: salmoscan
 lang: en
 title: Salmoscan
-description: Real-time welfare, biomass, and counting — for data-driven wellboat operations.
-problemTitle: Treatment operations still run with too little live data on the fish
+description: Realtime welfare analysis, counting and biomass estimation on wellboats — enabling data-driven treatment
+problemTitle: Treatment operations still run without realtime monitoring of delicing effect and fish welfare.
 problemLead: Better fish-welfare control on board, and more precise data for decisions during the operation — not only afterwards.
 problem1Title: Mortality without operational feedback
 problem1Body: Manual spot samples are too slow to steer treatment flow in real time.
@@ -15,20 +15,20 @@ solutionTitle: What Salmoscan solves
 solutionBody: Salmoscan is a decision-support tool for farmers and wellboats. When fish are on board, it delivers documented insight where they actually pass the camera — for operational control and auditable records.
 productTitle: Built for treatment flow
 productLead: Pipe and trough models developed and built in Norway — for operations where fish move fast and conditions are demanding.
-edge: Machine vision tailored for pipe flow on wellboats and treatment lines.
+edge: Machine vision tailored for wellboats and treatment lines.
 applicationsTitle: Typical applications
 application1: Pipe flow on wellboats and treatment vessels
 application2: Before and after treatment — loading or unloading side
 application3: Documentation of effect and fish welfare
 proofLine: Commercial units in operation, including on Ronja Nærøysund. Weight model developed with the Institute of Marine Research.
-metricsTitle: Documented results
+metricsTitle: Verified in operation. 8 systems sold.
 metric1Value: 99.96%
 metric1Label: Wellboat counting under normal operations — manually verified
 metric2Value: 98%
 metric2Label: Biomass/weight — verified with the Institute of Marine Research
 capabilitiesTitle: What the system sees
 capability1Title: Lice
-capability1Body: Counting and classification in the flow — a basis for better process control.
+capability1Body: Counting and classification in real time — enabling process control and evaluation of delicing effect.
 capability2Title: Wounds and scale loss
 capability2Body: Automatic skin-health assessment at population level.
 capability3Title: Biomass and counting
