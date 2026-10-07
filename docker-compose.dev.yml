@@ -1,0 +1,58 @@
+# Local DEV / LAN feedback — http://<lan-ip>/  (host :80)
+#
+#   make dev-up
+#   make dev-down
+#
+# Uses port 80. Stop the Server (public) stack first if it is bound to :80:
+#   cd ../Server/docker && docker compose down
+
+name: mohntech-dev
+
+services:
+  caddy:
+    image: caddy:2
+    container_name: mohntech-dev-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/Caddyfile.dev:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - web
+      - contactapi
+
+  web:
+    image: ${NODE_IMAGE:-node:22-bookworm}
+    container_name: mohntech-dev-web
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app
+      - mohntech_dev_node_modules:/app/node_modules
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      # Relative URL → works for localhost and LAN IP behind Caddy
+      PUBLIC_CONTACT_API_URL: ${PUBLIC_CONTACT_API_URL:-/api/contact}
+    command: >
+      sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 4321"
+
+  contactapi:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.contactapi
+    image: docker.mohntechnology.no/mohntechnology-contactapi:dev
+    container_name: mohntech-dev-contactapi
+    restart: unless-stopped
+    environment:
+      LISTEN: ":8787"
+      # Browsers send Origin with host:port; include LAN IP in .env when sharing
+      ALLOW_ORIGINS: ${ALLOW_ORIGINS:-http://127.0.0.1,http://localhost,http://192.168.10.124}
+      MAIL_TO: ${MAIL_TO:-dev@example.com}
+      MAIL_FROM: ${MAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+
+volumes:
+  mohntech_dev_node_modules:

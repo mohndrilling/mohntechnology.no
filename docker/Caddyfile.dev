@@ -1,0 +1,18 @@
+# Local DEV — HTTP on :80 (Astro + contactapi). Same-origin /api/*.
+# Mutual exclusive with Server/Caddy on the same host (both bind :80).
+
+:80 {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy contactapi:8787
+	}
+
+	handle /healthz {
+		reverse_proxy contactapi:8787
+	}
+
+	handle {
+		reverse_proxy web:4321
+	}
+}
